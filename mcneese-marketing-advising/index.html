@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>McNeese Marketing Concentration Advising</title>
+<style>
+  :root{
+    --bg:#eef1ee;
+    --surface:#ffffff;
+    --surface-2:#f5f7f3;
+    --ink:#1b2430;
+    --ink-muted:#5b6472;
+    --border:#dbe0d8;
+    --accent:#96721e;
+    --accent-strong:#7a5a17;
+    --accent-soft:#f2e6c9;
+    --blue:#2e5d8a;
+    --blue-soft:#e3edf6;
+    --success:#3f7857;
+    --success-soft:#e2efe6;
+    --locked:#9aa0a6;
+    --locked-soft:#eceeec;
+    --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
+    --radius: 10px;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "SF Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161b;
+      --surface:#1a2028;
+      --surface-2:#20262e;
+      --ink:#e7e9e4;
+      --ink-muted:#98a2ad;
+      --border:#2b323b;
+      --accent:#d9a94a;
+      --accent-strong:#e9bc63;
+      --accent-soft:#3a301c;
+      --blue:#6fa8d8;
+      --blue-soft:#1c2b38;
+      --success:#6fbf95;
+      --success-soft:#1b2f24;
+      --locked:#6b7480;
+      --locked-soft:#232a31;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12161b; --surface:#1a2028; --surface-2:#20262e; --ink:#e7e9e4; --ink-muted:#98a2ad;
+    --border:#2b323b; --accent:#d9a94a; --accent-strong:#e9bc63; --accent-soft:#3a301c;
+    --blue:#6fa8d8; --blue-soft:#1c2b38; --success:#6fbf95; --success-soft:#1b2f24;
+    --locked:#6b7480; --locked-soft:#232a31;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ee; --surface:#ffffff; --surface-2:#f5f7f3; --ink:#1b2430; --ink-muted:#5b6472;
+    --border:#dbe0d8; --accent:#96721e; --accent-strong:#7a5a17; --accent-soft:#f2e6c9;
+    --blue:#2e5d8a; --blue-soft:#e3edf6; --success:#3f7857; --success-soft:#e2efe6;
+    --locked:#9aa0a6; --locked-soft:#eceeec;
+    --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-weight:700; text-wrap:balance; margin:0;}
+  .num{font-variant-numeric:tabular-nums;}
+  a{color:var(--blue);}
+  button{font-family:inherit;}
+
+  .app{
+    display:grid;
+    grid-template-columns: 300px minmax(0,1fr);
+    gap:28px;
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+    align-items:start;
+  }
+  @media (max-width: 860px){
+    .app{grid-template-columns: 1fr; padding:18px 14px 60px;}
+    .rail{position:static !important;}
+  }
+
+  .rail{
+    position:sticky; top:20px;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .brand .eyebrow{
+    display:block; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--ink-muted); margin-bottom:6px; font-weight:600;
+  }
+  .brand h1{font-size:24px; line-height:1.15; margin-bottom:6px;}
+  .catalog-tag{margin:0; font-size:12.5px; color:var(--ink-muted);}
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:16px;
+  }
+
+  .year-card{display:flex; flex-direction:column; gap:7px;}
+  .field-label{font-size:11px; font-weight:600; color:var(--ink-muted); letter-spacing:.01em;}
+  .year-select{
+    font-family:var(--font-body); font-size:13.5px; font-weight:600; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--ink); cursor:pointer;
+  }
+
+  .conc-switch{display:flex; flex-direction:column; gap:8px; padding:6px;}
+  .conc-btn{
+    text-align:left; border:1px solid transparent; background:transparent; color:var(--ink);
+    padding:10px 12px; border-radius:8px; cursor:pointer; font-size:13.5px; font-weight:600;
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .conc-btn .sub{display:block; font-weight:400; color:var(--ink-muted); font-size:11.5px; margin-top:2px;}
+  .conc-btn:hover{background:var(--surface-2);}
+  .conc-btn[aria-selected="true"]{
+    background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong);
+  }
+  .conc-btn[aria-selected="true"] .sub{color:var(--accent-strong); opacity:.8;}
+
+  .progress-card{display:flex; gap:16px; align-items:center;}
+  .ring-wrap{position:relative; width:84px; height:84px; flex:none;}
+  .ring-wrap svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .ring-track{fill:none; stroke:var(--border); stroke-width:8;}
+  .ring-fill{fill:none; stroke:var(--accent); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .5s ease;}
+  @media (prefers-reduced-motion: reduce){ .ring-fill{transition:none;} }
+  .ring-label{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring-label .n{font-size:19px; font-weight:700; font-family:var(--font-display);}
+  .ring-label .d{font-size:9.5px; color:var(--ink-muted); letter-spacing:.03em;}
+
+  .progress-meta{display:flex; flex-direction:column; gap:6px; min-width:0;}
+  .progress-meta .headline{font-size:13.5px; font-weight:600;}
+  .chip{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600;
+    padding:3px 9px; border-radius:999px; width:fit-content; letter-spacing:.02em;
+  }
+  .chip.blue{background:var(--blue-soft); color:var(--blue);}
+  .chip.success{background:var(--success-soft); color:var(--success);}
+  .standing-note{font-size:11px; color:var(--ink-muted); margin:0;}
+
+  .ghost-btn{
+    width:100%; background:transparent; border:1px solid var(--border); color:var(--ink-muted);
+    padding:9px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:600;
+  }
+  .ghost-btn:hover{border-color:var(--locked); color:var(--ink);}
+
+  .rail-footnote{font-size:11px; color:var(--ink-muted); line-height:1.5; margin:0; padding:0 2px;}
+
+  .timeline{display:flex; flex-direction:column; gap:16px;}
+  .term{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .term-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    padding:14px 18px; border-bottom:1px solid var(--border); background:var(--surface-2);
+  }
+  .term-head h2{font-size:16.5px;}
+  .term-head .term-hours{font-size:11.5px; color:var(--ink-muted); font-weight:600; letter-spacing:.02em;}
+  .term-progress-track{height:3px; background:var(--border);}
+  .term-progress-fill{height:100%; background:var(--accent); transition:width .4s ease;}
+  @media (prefers-reduced-motion: reduce){ .term-progress-fill{transition:none;} }
+
+  .rows{padding:6px 8px;}
+  .row{
+    display:grid; grid-template-columns: 22px 78px minmax(0,1fr) 40px 22px;
+    align-items:center; gap:12px; padding:9px 10px; border-radius:8px; position:relative;
+  }
+  .row:hover{background:var(--surface-2);}
+  .row input[type="checkbox"], .row input[type="radio"]{
+    width:17px; height:17px; accent-color:var(--accent); cursor:pointer;
+  }
+  .row .code{font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--ink-muted); letter-spacing:.01em;}
+  .row .title{font-size:13.5px; min-width:0;}
+  .row .credits{font-size:12px; color:var(--ink-muted); text-align:right;}
+  .row.locked{opacity:.55;}
+  .row.locked .title{color:var(--ink-muted);}
+  .row.locked input{cursor:not-allowed;}
+  .row.completed .title{color:var(--success);}
+  .row.completed .code{color:var(--success); opacity:.85;}
+
+  .term-badge{
+    display:inline-block; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    padding:2px 6px; border-radius:5px; background:var(--blue-soft); color:var(--blue); vertical-align:middle;
+  }
+
+  .lock-ico, .info-ico{
+    width:15px; height:15px; color:var(--locked); flex:none; cursor:help;
+  }
+  .row[data-tip]:hover::after, .row[data-tip]:focus-within::after{
+    content: attr(data-tip);
+    position:absolute; right:10px; top:100%; margin-top:4px; z-index:5;
+    background:var(--ink); color:var(--bg); font-size:11px; line-height:1.4;
+    padding:7px 10px; border-radius:7px; max-width:260px; box-shadow:var(--shadow);
+    font-family:var(--font-body); font-weight:400;
+  }
+  :root[data-theme="dark"] .row[data-tip]:hover::after{background:var(--surface-2); color:var(--ink); border:1px solid var(--border);}
+  @media (prefers-color-scheme: dark){ .row[data-tip]:hover::after{background:var(--surface-2); color:var(--ink); border:1px solid var(--border);} }
+
+  .choice-group{
+    margin:4px 6px 8px; padding:8px 10px; border:1px dashed var(--border); border-radius:8px;
+  }
+  .choice-label{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-muted);
+    font-weight:700; padding:2px 4px 4px;
+  }
+
+  .elective-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px;
+    padding:9px 10px; border-radius:8px;
+  }
+  .elective-row:hover{background:var(--surface-2);}
+  .elective-row .elabel{font-size:13px; font-weight:600; flex:1 1 220px; min-width:0;}
+  .elective-row .ehours{font-size:11.5px; color:var(--ink-muted); flex:none;}
+  .elective-row .ehint{width:100%; font-size:11px; color:var(--ink-muted); margin-top:-2px;}
+  .elective-row select, .elective-row input[type="text"]{
+    font-family:var(--font-body); font-size:12.5px; padding:6px 8px; border-radius:6px;
+    border:1px solid var(--border); background:var(--surface); color:var(--ink); min-width:180px;
+  }
+  .elective-row .ecomplete{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-muted); flex:none;}
+  .elective-row.filled{background:var(--success-soft);}
+  .elective-row.filled .elabel{color:var(--success);}
+
+  .notes-block{
+    padding:14px 18px; border-top:1px solid var(--border); background:var(--surface-2);
+    font-size:11.5px; color:var(--ink-muted); line-height:1.6;
+  }
+  .notes-block strong{color:var(--ink);}
+
+  .page-footer{
+    max-width:1180px; margin:0 auto; padding:0 20px 40px; color:var(--ink-muted); font-size:11.5px; line-height:1.6;
+  }
+  .page-footer a{color:var(--ink-muted); text-decoration:underline;}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+  </symbol>
+</svg>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand">
+      <span class="eyebrow">McNeese State University · Advising Tool</span>
+      <h1>Marketing Degree Roadmap</h1>
+      <p class="catalog-tag" id="catalogTag">2026–2027 Catalog · BSBA, 120 hrs</p>
+    </div>
+
+    <div class="card year-card">
+      <label class="field-label" for="yearSelect">Catalog year (the year you enrolled at McNeese)</label>
+      <select id="yearSelect" class="year-select"></select>
+    </div>
+
+    <div class="card conc-switch" role="tablist" aria-label="Concentration">
+      <button class="conc-btn" data-conc="digital" role="tab">
+        Digital Marketing<span class="sub">Concentration, BSBA</span>
+      </button>
+      <button class="conc-btn" data-conc="general" role="tab">
+        General Marketing<span class="sub">Concentration, BSBA</span>
+      </button>
+    </div>
+
+    <div class="card progress-card">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 84 84">
+          <circle class="ring-track" cx="42" cy="42" r="36"></circle>
+          <circle class="ring-fill" id="ringFill" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="226"></circle>
+        </svg>
+        <div class="ring-label">
+          <span class="n num" id="pctLabel">0%</span>
+          <span class="d">complete</span>
+        </div>
+      </div>
+      <div class="progress-meta">
+        <span class="headline num" id="hoursLabel">0 of 120 hrs</span>
+        <span class="chip blue" id="standingChip">Freshman standing</span>
+        <p class="standing-note">Based on total hours checked off (30/60/90 hr thresholds).</p>
+      </div>
+    </div>
+
+    <button class="ghost-btn" id="resetBtn">Reset my progress</button>
+
+    <p class="rail-footnote">
+      Your checkmarks are saved only in this browser (nothing is sent anywhere). This is an unofficial planning aid built from the
+      <span id="catalogYearFoot">2026–2027</span> McNeese catalog — always confirm final requirements with your advisor or Degree Works.
+    </p>
+  </aside>
+
+  <main class="timeline" id="timeline" aria-live="polite"></main>
+</div>
+
+<p class="page-footer">
+  Source: McNeese State University Academic Catalog. This tool is not produced or endorsed by McNeese State University.
+</p>
+
+<script>
+const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-2027"],"defaultYear":"2026-2027","source":"https://catalog.mcneese.edu","genEdNote":"Gen-Ed elective option lists are shown from the current (2026-2027) catalog for all years; the specific menu of qualifying courses may have shifted slightly in older catalogs.","programs":{"2022-2023":{"digital":{"title":"Marketing, Digital Marketing Concentration, BS","catalogYear":"2022-2023","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"80","coid":"430500"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"80","coid":"430501"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 218","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"CSCI 321","title":"Information Systems Analysis","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"80","coid":"430138"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"80","coid":"430139"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"80","coid":"430141"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0},{"block":"course","code":"MKTG 385","title":"Digital Marketing","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"course","code":"MKTG 401","title":"Social Media Marketing","credits":3.0},{"block":"course","code":"MKTG 444","title":"Integrated Marketing Communications","credits":3.0},{"block":"course","code":"BADM 316","title":"AI for Business Applications","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from HHP Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]},"general":{"title":"Marketing, General Marketing Concentration, BS","catalogYear":"2022-2023","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"80","coid":"430500"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"80","coid":"430501"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 218","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"CSCI 321","title":"Information Systems Analysis","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"80","coid":"430138"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"80","coid":"430139"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"80","coid":"430141"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MKTG 444","title":"Integrated Marketing Communications","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Electives (300/400 Level)","hours":6,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from HHP Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]}},"2023-2024":{"digital":{"title":"Marketing, Digital Marketing Concentration, BS","catalogYear":"2023-2024","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"90","coid":"471500"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"90","coid":"471501"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 218","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"90","coid":"471138"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"90","coid":"471139"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"90","coid":"471141"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0},{"block":"course","code":"MKTG 385","title":"Digital Marketing","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"course","code":"MKTG 340","title":"Social Media Marketing","credits":3.0},{"block":"course","code":"BADM 316","title":"AI for Business Applications","credits":3.0},{"block":"course","code":"MKTG 444","title":"Integrated Marketing Communications","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from HHP Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]},"general":{"title":"Marketing, General Marketing Concentration, BS","catalogYear":"2023-2024","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"90","coid":"471500"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"90","coid":"471501"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 218","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"90","coid":"471138"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"90","coid":"471139"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"90","coid":"471141"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MKTG 444","title":"Integrated Marketing Communications","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Electives (300/400 Level)","hours":6,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from HHP Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]}},"2024-2025":{"digital":{"title":"Marketing, Digital Marketing Concentration, BSBA","catalogYear":"2024-2025","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"93","coid":"491178"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"93","coid":"491179"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"93","coid":"490816"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"93","coid":"490817"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"93","coid":"490819"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0},{"block":"course","code":"MKTG 429","title":"Digital Marketing","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"course","code":"MKTG 340","title":"Social Media Marketing","credits":3.0},{"block":"course","code":"BADM 316","title":"AI for Business Applications","credits":3.0},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]},"general":{"title":"Marketing, General Marketing Concentration, BSBA","catalogYear":"2024-2025","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"93","coid":"491178"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"93","coid":"491179"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"93","coid":"490816"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"93","coid":"490817"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"93","coid":"490819"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Electives (300/400 Level)","hours":6,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Core Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]}},"2025-2026":{"digital":{"title":"Marketing, Digital Marketing Concentration, BSBA","catalogYear":"2025-2026","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"97","coid":"510913"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"97","coid":"510914"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"97","coid":"510551"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"97","coid":"510552"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"97","coid":"510554"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0},{"block":"course","code":"MKTG 429","title":"Digital Marketing","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"course","code":"MKTG 340","title":"Social Media Marketing","credits":3.0},{"block":"course","code":"BADM 316","title":"AI for Business Applications","credits":3.0},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]},"general":{"title":"Marketing, General Marketing Concentration, BSBA","catalogYear":"2025-2026","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 113","title":"College Algebra","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"97","coid":"510913"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"97","coid":"510914"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"97","coid":"510551"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"97","coid":"510552"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"97","coid":"510554"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Electives (300/400 Level)","hours":6,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]}},"2026-2027":{"digital":{"title":"Marketing, Digital Marketing Concentration, BSBA","catalogYear":"2026-2027","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 105","title":"Contemporary Mathematics","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"102","coid":"531394"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"102","coid":"531395"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"102","coid":"531032"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"102","coid":"531033"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"102","coid":"531035"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0},{"block":"course","code":"MKTG 429","title":"Digital Marketing","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"course","code":"MKTG 340","title":"Social Media Marketing","credits":3.0},{"block":"course","code":"BADM 316","title":"AI for Business Applications","credits":3.0},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research and Analytics","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]},"general":{"title":"Marketing, General Marketing Concentration, BSBA","catalogYear":"2026-2027","totalHours":120,"semesters":[{"label":"Freshman Fall","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Electives","hours":6,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"ENGL 101","title":"English Composition I","credits":3.0},{"block":"course","code":"MATH 105","title":"Contemporary Mathematics","credits":3.0},{"block":"course","code":"ORIN 101","title":"Freshman Orientation","credits":0.0},{"block":"course","code":"PSYC 101","title":"Introduction to Psychology","credits":3.0}]},{"label":"Freshman Spring","hours":15,"blocks":[{"block":"elective","label":"Natural Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"C"},{"block":"course","code":"BADM 120","title":"Topics in Contemporary Business","credits":3.0},{"block":"course","code":"ENGL 102","title":"English Composition II","credits":3.0},{"block":"course","code":"MATH 130","title":"Finite Mathematics","credits":3.0},{"block":"choice","options":[{"type":"course","code":"HIST 201","title":"American History to 1877","credits":3.0,"catoid":"102","coid":"531394"},{"type":"course","code":"HIST 202","title":"American History since 1877","credits":3.0,"catoid":"102","coid":"531395"}]}]},{"label":"Sophomore Fall","hours":15,"blocks":[{"block":"course","code":"ACCT 208","title":"Accounting Principles","credits":3.0},{"block":"course","code":"BADM 201","title":"Legal Environment of Business","credits":3.0},{"block":"course","code":"BADM 318","title":"Issues in Global Business","credits":3.0},{"block":"course","code":"ECON 203","title":"Microeconomics","credits":3.0},{"block":"course","code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0}]},{"label":"Sophomore Spring","hours":15,"blocks":[{"block":"course","code":"ACCT 241","title":"Managerial Accounting","credits":3.0},{"block":"course","code":"BADM 275","title":"Analytical Tools for Business Decisions","credits":3.0},{"block":"course","code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0},{"block":"course","code":"ECON 204","title":"Macroeconomics","credits":3.0},{"block":"course","code":"OSBC 207","title":"Microsoft Excel for Business","credits":3.0}]},{"label":"Junior Fall","hours":15,"blocks":[{"block":"elective","label":"Fine Arts General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"E"},{"block":"course","code":"BADM 374","title":"Introduction to Management Information Systems","credits":3.0},{"block":"course","code":"MGMT 300","title":"Management Concepts and Practices","credits":3.0},{"block":"course","code":"MKTG 320","title":"Marketing Principles","credits":3.0},{"block":"choice","options":[{"type":"course","code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"catoid":"102","coid":"531032"},{"type":"course","code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"catoid":"102","coid":"531033"},{"type":"course","code":"ENGL 221","title":"Classical Mythology","credits":3.0,"catoid":"102","coid":"531035"}]}]},{"label":"Junior Spring","hours":15,"blocks":[{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"Social/Behavioral Sciences General Education Elective","hours":3,"grade_c_required":false,"genEdArea":"F"},{"block":"course","code":"FIN 310","title":"Principles of Business Finance","credits":3.0},{"block":"course","code":"MGMT 370","title":"Operations Management and Quantitative Methods","credits":3.0},{"block":"course","code":"MKTG 375","title":"Consumer Behavior","credits":3.0}]},{"label":"Senior Fall","hours":15,"blocks":[{"block":"elective","label":"Approved Business Electives (300/400 Level)","hours":6,"grade_c_required":true,"genEdArea":null},{"block":"elective","label":"Approved Non-Business Elective","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MKTG 480","title":"Marketing Management and Strategy","credits":3.0}]},{"label":"Senior Spring","hours":15,"blocks":[{"block":"elective","label":"Approved Business Elective (300/400 Level)","hours":3,"grade_c_required":false,"genEdArea":null},{"block":"elective","label":"MKTG Electives (300/400 Level)","hours":6,"grade_c_required":false,"genEdArea":null},{"block":"course","code":"MGMT 481","title":"Strategic Management","credits":3.0},{"block":"course","code":"MKTG 461","title":"Marketing Research and Analytics","credits":3.0}]}],"generalNotes":["Note Students interested in pursuing the Undergraduate Certificate in Liquefied Natural Gas Business should review the course requirements on the program page, submit a curriculum change request\u2013approved by the head of the Department of Business Disciplines\u2013to Student Central, and contact their advisor\u00a0for assistance working the courses into their bachelor\u2019s degree.","Notes Credits from KNES Activity courses will not be applied toward the degree. Students must earn a grade of C\u00a0or better in ACCT 208, ENGL 101, ENGL 102,\u00a0MATH 130, MGMT 300, and MGMT 481, as well as in all MKTG courses and elective courses denoted with an asterisk.","General Notes All bachelor\u2019s degrees must include 40 hours at the 300/400 level. All bachelor\u2019s degrees require the successful completion of at least nine hours of Natural Sciences General Education Curriculum courses.\u00a0Six hours shall be earned in a single life or physical science; the remaining three hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement). All degree and graduation requirements may be found on the Academic Regulations page."]}}},"courses":{"ACCT 208":{"title":"Accounting Principles","credits":3.0,"description":"Basic accounting and financial reporting concepts and the significance of accounting information in financial analysis and business decision-making.","prereq":{"course_groups":[["ENGL 101"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"ACCT 241":{"title":"Managerial Accounting","credits":3.0,"description":"Use of accounting concepts, techniques, reports, analyses, and interpretations as an aid to management.","prereq":{"course_groups":[["ACCT 208"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"BADM 120":{"title":"Topics in Contemporary Business","credits":3.0,"description":"Survey of business concepts and functional area of business including accounting, economics, finance, management, marketing, and business ethics.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"BADM 201":{"title":"Legal Environment of Business","credits":3.0,"description":"Introduction to the American legal system and to the inter-relationship of law, business, and ethics. Includes basic contract and tort law; administrative agencies and regulations.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"BADM 275":{"title":"Analytical Tools for Business Decisions","credits":3.0,"description":"Statistical methodologies and applied analytical methods for analysis of common business decision problems. Topics include descriptive statistics, hypothesis testing, probability applications for business, decision-making under risk and uncertainty, quantitative modeling, business forecasting, simple and multiple regression analyses, and linear programming. Microsoft Excel and other software tools used for data analysis.","prereq":{"course_groups":[["STAT 231"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"BADM 318":{"title":"Issues in Global Business","credits":3.0,"description":"Overview of forces shaping global economy and challenges facing international business operations. Includes economic, political, ethical, and cultural factors; international organizations, institutions, and conventions; and the organization and practices of multinational firms.","prereq":{"course_groups":[],"standing":"sophomore","notes":[]},"coreq":null,"termsOffered":null},"BADM 374":{"title":"Introduction to Management Information Systems","credits":3.0,"description":"The study of people, technology, organizations, and the relationships among them; processes used to maximize benefits from investments in personnel, equipment, and business processes.","prereq":{"course_groups":[["OSBC 207","OSBC 307"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"COMM 105":{"title":"Introduction to Communication Strategies","credits":3.0,"description":"Introduction to various aspects of written and oral communication. Course content includes social media literacy, small group interactions, and preparation and presentation of information in a professional context.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"ECON 203":{"title":"Microeconomics","credits":3.0,"description":"Introduction to how individuals and firms make decisions and how they interact. Topics include the study of consumer theory and theories of price determination, production, market structure, trade, externalities, and public goods.","prereq":{"course_groups":[["MATH 105","MATH 113"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"ECON 204":{"title":"Macroeconomics","credits":3.0,"description":"Introduction to economy-wide phenomena, including national income, inflation, unemployment, economic growth, the monetary system, fiscal policy, and international trade and finance.","prereq":{"course_groups":[["MATH 105","MATH 113"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"ENGL 101":{"title":"English Composition I","credits":3.0,"description":"Introduction to academic writing, research, and writing across the curriculum. Students will produce at least 3500 words of academic prose during the semester.\nFor information about Advanced Placement opportunities based on your test scores, please refer to the\nMcNeese State University Advanced Placement Program\nsection of the Academic Regulations page of the Academic Catalog.","prereq":{"course_groups":[],"standing":null,"notes":["Minimum ACT English score of 18","ACT English score less than 18 with a corequisite of ENGL 100","minimum ACCUPLACER Next-Generation Writing score of 250","ACCUPLACER Next-Generation Writing score less than 250 with a corequisite of ENGL 100","minimum SAT Evidence-Based Reading and Writing (ERW) score of 500","SAT ERW score less than 500 with a corequisite of ENGL 100","minimum DUOLINGO English Test score of 100","minimum IELTS score of 6.0","minimum Pearson PTE Academic score of 48","minimum TOEFL score of 71","certificate of completion for ELS Intensive English Level 112"]},"coreq":null,"termsOffered":null},"ENGL 102":{"title":"English Composition II","credits":3.0,"description":"Writing researched themes and exercises. Reinforcement of academic writing, research, and writing across the curriculum introduced in ENGL 101. Students will produce at least 5000 words of researched writing during the semester.\nFor information about Advanced Placement opportunities based on your test scores, please refer to the\nMcNeese State University Advanced Placement Program\nsection of the Academic Regulations page of the Academic Catalog.","prereq":{"course_groups":[["ENGL 101"]],"standing":null,"notes":["minimum ACT English score of 26","minimum SAT Evidence-Based Reading and Writing (ERW) score of 620"]},"coreq":null,"termsOffered":null},"ENGL 203":{"title":"Introduction to Literature I","credits":3.0,"description":"Study of the short story and the novel. Methods of literary analysis, thematic study, and critical approach.","prereq":{"course_groups":[["ENGL 102"]],"standing":null,"notes":["(minimum ACT English score of 32 and minimum ACT Composite score of 28)","(minimum SAT Evidence-Based Reading and Writing (ERW) score of 700\u00a0and minimum SAT Total score of 1310)"]},"coreq":null,"termsOffered":null},"ENGL 204":{"title":"Introduction to Literature II","credits":3.0,"description":"Study of poetry and drama. Methods of literary analysis, thematic study, and critical approach.","prereq":{"course_groups":[["ENGL 102"]],"standing":null,"notes":["(minimum ACT English score of 32 and minimum ACT Composite score of 28)","(minimum SAT Evidence-Based Reading and Writing (ERW) score of 700\u00a0and minimum SAT Total score of 1310)"]},"coreq":null,"termsOffered":null},"ENGL 221":{"title":"Classical Mythology","credits":3.0,"description":"Study of legends growing out of the life and literature of ancient Greece and Rome.","prereq":{"course_groups":[["ENGL 102"]],"standing":null,"notes":["(minimum ACT English score of 32 and minimum ACT Composite score of 28)","(minimum SAT Evidence-Based Reading and Writing (ERW) score of 700\u00a0and minimum SAT Total score of 1310)"]},"coreq":null,"termsOffered":null},"FIN 310":{"title":"Principles of Business Finance","credits":3.0,"description":"Introduction to the management of financial resources in business firms. Topics include investment, valuation, capital budgeting, working capital management, capital structure and cost of capital, basic risk and return, financial analysis, and sources of financing.","prereq":{"course_groups":[["ACCT 208"],["ECON 203","ECON 204"],["ENGL 102"],["STAT 231"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":null},"HIST 201":{"title":"American History to 1877","credits":3.0,"description":"Survey of American history to 1877.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"HIST 202":{"title":"American History since 1877","credits":3.0,"description":"Survey of American history from 1877 to the present.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"MATH 105":{"title":"Contemporary Mathematics","credits":3.0,"description":"An introduction to topics in contemporary mathematics. Topics may include problem solving, sets, logic, finance, geometry, and probability and statistics, as well as real life applications.","prereq":{"course_groups":[],"standing":null,"notes":["Minimum ACT Mathematics score of 19","ACT Mathematics score of less than 19\u00a0with a corequisite\u00a0of MATH 104","minimum ALEKS Placement","Preparation and Learning (ALEKS PPL) score of 35","ALEKS PPL score of less than 35 with a corequisite of MATH 104","minimum SAT Math Section score of 510","SAT Math Section score of less than 510 with a corequisite of MATH 104","permission of department head"]},"coreq":null,"termsOffered":null},"MATH 130":{"title":"Finite Mathematics","credits":3.0,"description":"Matrices with applications, linear programming, probability, and mathematics of finance.","prereq":{"course_groups":[["MATH 105","MATH 113","MATH 170","MATH 171"]],"standing":null,"notes":["minimum ALEKS Placement","Preparation\u00a0and Learning (PPL) score of 61","permission of department head"]},"coreq":null,"termsOffered":null},"MGMT 300":{"title":"Management Concepts and Practices","credits":3.0,"description":"Survey of administrative and behavioral processes fundamental to successfully operating various types of enterprises. Focuses on the management functions of planning, organizing, leading and controlling and how management functions are impacted by domestic and global environmental factors.","prereq":{"course_groups":[["ENGL 102"],["MATH 130","MATH 175","STAT 231"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":null},"MGMT 370":{"title":"Operations Management and Quantitative Methods","credits":3.0,"description":"Concepts and strategies for the management of production and operations processes in manufacturing and service organizations, capacity, location, quality and inventory management, and planning and control systems.","prereq":{"course_groups":[["BADM 218","BADM 318"],["BADM 275"],["MGMT 300"],["MKTG 320"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":null},"MGMT 481":{"title":"Strategic Management","credits":3.0,"description":"Policy and strategy formulation and implementation from an overall management perspective requiring integrative analysis of business functions and disciplines as affected by social, ethical, legal, political, and international influences.","prereq":{"course_groups":[["FIN 310"],["MGMT 300"],["MGMT 370"],["MKTG 320"]],"standing":"senior","notes":["permission of department head"]},"coreq":null,"termsOffered":null},"MKTG 320":{"title":"Marketing Principles","credits":3.0,"description":"Marketing in a competitive economy at the local, national, and international level. Analysis of marketing structures by functions, institutions, and commodities including their dynamic legal, political, social, and ethical environments.","prereq":{"course_groups":[["ENGL 102"],["MATH 130","MATH 175","STAT 231"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":null},"MKTG 340":{"title":"Social Media Marketing","credits":3.0,"description":"Explores social media as a marketing tool. Students learn best practices of social media marketing and strategies to develop effective social media campaigns to meet the demands of today\u2019s dynamic online domain.","prereq":{"course_groups":[["MKTG 320"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":"Spring"},"MKTG 375":{"title":"Consumer Behavior","credits":3.0,"description":"Consumers and their relation to the marketing process. Emphasis on consumer needs, motivation, personality, learning, and perception; social influences; and consumer reaction to marketing mix variables.","prereq":{"course_groups":[["BADM 218","BADM 318"],["MKTG 320"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":null},"MKTG 429":{"title":"Digital Marketing","credits":3.0,"description":"Study of development and implementation of electronic commerce strategies; emphasis on the internet as a marketing delivery system; marketing through electronic media; social networks, blogs, branding online advertising.","prereq":{"course_groups":[["MKTG 320"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":"Spring"},"MKTG 461":{"title":"Marketing Research and Analytics","credits":3.0,"description":"Introduces marketing research and data analytics in marketing decision-making applications. Emphasizes research design, questionnaire construction, sampling, fieldwork, data collection, and statistical analysis. Students will implement research methodology within varied marketing domains, utilize statistical and data visualization tools, and conduct a semester-long research project.","prereq":{"course_groups":[["BADM 218","BADM 318"],["BADM 275"],["MKTG 320"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":"Fall"},"MKTG 480":{"title":"Marketing Management and Strategy","credits":3.0,"description":"In-depth analysis of marketing management and strategy to coordinate and facilitate the multifaced marketing function and to integrate various marketing concepts and principles. Includes an in-depth analysis of current marketing management cases.","prereq":{"course_groups":[["BADM 218","BADM 318"]],"standing":"junior","notes":["6 credit hours of MKTG"]},"coreq":null,"termsOffered":"Spring"},"ORIN 101":{"title":"Freshman Orientation","credits":0.0,"description":"Workshop designed to aid new students in adjusting to the University. Emphasis on University policies and procedures to include registration, available services, placement tests, campus social life, location of various University facilities, etc.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"OSBC 207":{"title":"Microsoft Excel for Business","credits":3.0,"description":"Business applications of Microsoft Excel software: spreadsheets, databases, and graphics.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"PSYC 101":{"title":"Introduction to Psychology","credits":3.0,"description":"Provides an understanding of human behavior and lays a foundation for additional work in psychology.","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"STAT 231":{"title":"Elementary Probability and Statistical Inference","credits":3.0,"description":"Calculation of simple probability in discrete and continuous variable cases. Descriptive statistics, measures of central tendency, binomial, Poisson and normal distributions. Testing hypotheses using normal deviate and t-statistics.","prereq":{"course_groups":[["MATH 105","MATH 113","MATH 170","MATH 171"]],"standing":null,"notes":["minimum ALEKS Placement","Preparation and Learning (PPL) score of 61","permission of department head"]},"coreq":null,"termsOffered":null},"BADM 218":{"title":"Issues in Global Business","credits":3.0,"description":"Overview of forces shaping global economy and challenges facing international business operations. Includes economic, political, ethical and cultural factors; international organizations, institutions and conventions; and the organization and practices of multinational firms.","prereq":{"course_groups":[],"standing":"sophomore","notes":[]},"coreq":null,"termsOffered":null},"CSCI 321":{"title":"Information Systems Analysis","credits":3.0,"description":"Technologies and strategies for managing information systems. Topics include requirements modeling, development strategies, data design, user interface, and specialized systems.","prereq":{"course_groups":[["CSCI 101","CSCI 241","OSBC 207","OSBC 307"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"MATH 113":{"title":"College Algebra","credits":3.0,"description":"Fundamental algebraic operations, linear and quadratic equations and inequalities with applications, radical and rational equations, functions (exponential and logarithmic), graphing, zeros of polynomials, systems of equations and inequalities.\nFor information about Advanced Placement opportunities based on your test scores, please refer to the\nMcNeese State University Advanced Placement Program\nsection of the Academic Regulations page of the Academic Catalog.","prereq":{"course_groups":[["MATH 105"]],"standing":null,"notes":["Minimum ACT Mathematics score of 19","minimum ACT Mathematics score of 18 with a corequisite of MATH 110","minimum ACCUPLACER Next-Generation Quantitative Reasoning","Algebra","Statistics (QAS) score of 263","minimum ACCUPLACER Next-Generation QAS score of 250 with a corequisite of MATH 110","minimum ALEKS Placement","Preparation and Learning (PPL) score of 41","minimum ALEKS PPL score of 35 with a corequisite of MATH 110","minimum SAT Math Section score of 510","minimum SAT Math Section score of 500 with a corequisite of MATH 110"]},"coreq":null,"termsOffered":null},"MKTG 385":{"title":"Digital Marketing","credits":3.0,"description":"Study of development and implementation of electronic commerce strategies; emphasis on the internet as a marketing delivery system; marketing through electronic media; social networks, blogs, branding online advertising.","prereq":{"course_groups":[["MKTG 320"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"MKTG 401":{"title":"Social Media Marketing","credits":3.0,"description":"Social media marketing is a dynamic sub-discipline with an evolving influence upon modern business practices. This course acknowledges such via the study of social strategies for businesses and brands alike. Topics include content creation and distribution/promotion, platform-specific considerations, segmentation, and buyer personas within social. The roles and responsibilities of social media marketing managers are studied and simulated.","prereq":{"course_groups":[["MKTG 320"]],"standing":null,"notes":[]},"coreq":null,"termsOffered":null},"MKTG 444":{"title":"Integrated Marketing Communications","credits":3.0,"description":"Non-personal promotion strategies of modern businesses. Evaluation of media, budgeting, themes, and timing of promotional efforts.","prereq":{"course_groups":[["BADM 218"],["MKTG 320"]],"standing":"junior","notes":[]},"coreq":null,"termsOffered":"Fall"},"BADM 316":{"title":"AI for Business Applications","credits":3.0,"description":"Not yet published in the academic catalog as of the 2026-2027 edition; taught as a required Digital Marketing concentration course, replacing MKTG 390 (Marketing Analytics).","prereq":{"course_groups":[],"standing":null,"notes":[]},"coreq":null,"termsOffered":"Fall"}},"genEd":{"A":{"area":"A","name":"English Composition","credit_hours":6,"description":"To fulfill this requirement, students must complete both courses.","courses":[{"code":"ENGL 101","title":"English Composition I","credits":3.0,"category":null,"subcategory":null},{"code":"ENGL 102","title":"English Composition II","credits":3.0,"category":null,"subcategory":null}]},"B":{"area":"B","name":"Mathematics/Analytical Reasoning","credit_hours":6,"description":"To fulfill this requirement, students must complete two courses as specified by individual degree programs.","courses":[{"code":"MATH 105","title":"Contemporary Mathematics","credits":3.0,"category":null,"subcategory":null},{"code":"MATH 130","title":"Finite Mathematics","credits":3.0,"category":null,"subcategory":null},{"code":"MATH 171","title":"Algebra and Trigonometry I","credits":3.0,"category":null,"subcategory":null},{"code":"MATH 176","title":"Algebra and Trigonometry II","credits":3.0,"category":null,"subcategory":null},{"code":"MATH 190","title":"Calculus I","credits":4.0,"category":null,"subcategory":null},{"code":"MATH 291","title":"Calculus II","credits":4.0,"category":null,"subcategory":null},{"code":"PHIL 102","title":"Critical Thinking","credits":3.0,"category":null,"subcategory":null},{"code":"STAT 231","title":"Elementary Probability and Statistical Inference","credits":3.0,"category":null,"subcategory":null}]},"C":{"area":"C","name":"Natural Sciences","credit_hours":9,"description":"To fulfill this requirement, students must complete three courses (9 credit hours) as specified by individual degree programs.\u00a0Six credit hours shall be earned in a single life or physical science; the remaining 3\u00a0credit hours must be earned in a natural science area other than that previously selected (both life and physical sciences must be taken to fulfill this requirement).","courses":[{"code":"BIOL 101","title":"Introduction to Biology I","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 102","title":"Introduction to Biology II","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 105","title":"Living World I","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 106","title":"Living World II","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 201","title":"Microbiology for Nursing and Allied Health","credits":4.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 225","title":"Human Anatomy and Physiology I","credits":4.0,"category":"Life Sciences","subcategory":null},{"code":"BIOL 226","title":"Human Anatomy and Physiology II","credits":4.0,"category":"Life Sciences","subcategory":null},{"code":"ENSC 101","title":"General Environmental Science I","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"ENSC 102","title":"General Environmental Science II","credits":3.0,"category":"Life Sciences","subcategory":null},{"code":"CHEM 101","title":"General Chemistry I","credits":4.0,"category":"Physical Sciences","subcategory":null},{"code":"CHEM 102","title":"General Chemistry II","credits":4.0,"category":"Physical Sciences","subcategory":null},{"code":"CHEM 120","title":"Integrated Chemistry","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"ENSC 101","title":"General Environmental Science I","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"ENSC 102","title":"General Environmental Science II","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"GEOL 101","title":"Physical Geology","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"GEOL 210","title":"Environmental Geology","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHSC 101","title":"Physical Science I","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHSC 102","title":"Physical Science II: Astronomy","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHYS 201","title":"General Physics I","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHYS 202","title":"General Physics II","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHYS 211","title":"University Physics I","credits":3.0,"category":"Physical Sciences","subcategory":null},{"code":"PHYS 212","title":"University Physics II","credits":3.0,"category":"Physical Sciences","subcategory":null}]},"D":{"area":"D","name":"Humanities","credit_hours":9,"description":"To fulfill this requirement, students must complete three courses as specified by individual degree programs. All students must complete one English literature course, one history course, and one broad humanities or additional history course.","courses":[{"code":"ENGL 201","title":"Survey of British Literature I","credits":3.0,"category":"English Literature (3 credit hours)","subcategory":null},{"code":"ENGL 202","title":"Survey of British Literature II","credits":3.0,"category":"English Literature (3 credit hours)","subcategory":null},{"code":"ENGL 203","title":"Introduction to Literature I","credits":3.0,"category":"English Literature (3 credit hours)","subcategory":null},{"code":"ENGL 204","title":"Introduction to Literature II","credits":3.0,"category":"English Literature (3 credit hours)","subcategory":null},{"code":"ENGL 221","title":"Classical Mythology","credits":3.0,"category":"English Literature (3 credit hours)","subcategory":null},{"code":"HIST 101","title":"European History to 1648","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"HIST 102","title":"European History since 1648","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"HIST 121","title":"World Civilization to 1500","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"HIST 122","title":"World Civilization since 1500","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"HIST 201","title":"American History to 1877","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"HIST 202","title":"American History since 1877","credits":3.0,"category":"History (3 credit hours)","subcategory":null},{"code":"COMM 105","title":"Introduction to Communication Strategies","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"COMM 201","title":"Fundamentals of Public Speaking","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"COMM 205","title":"Interpersonal Communication","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 201","title":"Introduction to Philosophy","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 251","title":"Biomedical Ethics and Decision Making","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 252","title":"Ethics in the Sciences","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 254","title":"Professional Ethics","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 255","title":"Environmental Ethics","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 256","title":"Business Ethics","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"PHIL 299","title":"Interdisciplinary Issues in Philosophy","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"WMST 201","title":"Introduction to Women\u2019s and Gender Studies","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Broad Humanities"},{"code":"HIST 101","title":"European History to 1648","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"},{"code":"HIST 102","title":"European History since 1648","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"},{"code":"HIST 121","title":"World Civilization to 1500","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"},{"code":"HIST 122","title":"World Civilization since 1500","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"},{"code":"HIST 201","title":"American History to 1877","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"},{"code":"HIST 202","title":"American History since 1877","credits":3.0,"category":"Broad Humanities or Additional History (3 credit hours)","subcategory":"Additional History"}]},"E":{"area":"E","name":"Fine Arts","credit_hours":3,"description":"To fulfill this requirement, students must complete one course as specified by individual degree programs.","courses":[{"code":"ART 101","title":"Basic Design I","credits":3.0,"category":null,"subcategory":null},{"code":"ART 102","title":"Basic Design II","credits":3.0,"category":null,"subcategory":null},{"code":"ART 105","title":"Art and the Computer","credits":3.0,"category":null,"subcategory":null},{"code":"ART 228","title":"Photography, an Introduction","credits":3.0,"category":null,"subcategory":null},{"code":"ART 245","title":"Clay and Form, An Introduction","credits":3.0,"category":null,"subcategory":null},{"code":"ART 251","title":"Creative Arts, Culture, and Community","credits":3.0,"category":null,"subcategory":null},{"code":"ART 261","title":"Art History: Ancient through Medieval","credits":3.0,"category":null,"subcategory":null},{"code":"ART 262","title":"Art History: Renaissance to Modern","credits":3.0,"category":null,"subcategory":null},{"code":"MUSC 215","title":"Music Appreciation","credits":3.0,"category":null,"subcategory":null},{"code":"MUSC 253","title":"The History of Rock and Roll","credits":3.0,"category":null,"subcategory":null},{"code":"THEA 161","title":"Theatre Arts Appreciation","credits":3.0,"category":null,"subcategory":null}]},"F":{"area":"F","name":"Social/Behavioral Sciences","credit_hours":6,"description":"To fulfill this requirement, students must complete two courses as specified by individual degree programs.","courses":[{"code":"CJUS 111","title":"Introduction to Criminal Justice","credits":3.0,"category":null,"subcategory":null},{"code":"FMSC 241","title":"Family Relations","credits":3.0,"category":null,"subcategory":null},{"code":"FMSC 252","title":"Family Sexuality","credits":3.0,"category":null,"subcategory":null},{"code":"GEOG 111","title":"Introduction to Geography","credits":3.0,"category":null,"subcategory":null},{"code":"GEOG 231","title":"Geographic Information Systems I: Spatial Analysis","credits":3.0,"category":null,"subcategory":null},{"code":"POLS 201","title":"American Government","credits":3.0,"category":null,"subcategory":null},{"code":"PSYC 101","title":"Introduction to Psychology","credits":3.0,"category":null,"subcategory":null},{"code":"PSYC 233","title":"Psychology of Human Development","credits":3.0,"category":null,"subcategory":null},{"code":"PSYC 260","title":"Child Psychology","credits":3.0,"category":null,"subcategory":null},{"code":"PSYC 261","title":"Adolescent Psychology","credits":3.0,"category":null,"subcategory":null},{"code":"SOCL 201","title":"Introductory Sociology","credits":3.0,"category":null,"subcategory":null},{"code":"SOCL 211","title":"Social Problems","credits":3.0,"category":null,"subcategory":null}]}}};
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "mcneese_mktg_checklist_v1";
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { concentration:"digital", year: DATA.defaultYear, checked:{}, electives:{} };
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  var state = loadState();
+  if(!state.checked) state.checked = {};
+  if(!state.electives) state.electives = {};
+  if(!state.concentration) state.concentration = "digital";
+  if(!state.year || DATA.years.indexOf(state.year) === -1) state.year = DATA.defaultYear;
+
+  var timelineEl = document.getElementById("timeline");
+  var ringFill = document.getElementById("ringFill");
+  var pctLabel = document.getElementById("pctLabel");
+  var hoursLabel = document.getElementById("hoursLabel");
+  var standingChip = document.getElementById("standingChip");
+  var catalogTag = document.getElementById("catalogTag");
+  var catalogYearFoot = document.getElementById("catalogYearFoot");
+  var RING_CIRC = 2 * Math.PI * 36;
+
+  function classify(hours){
+    if(hours >= 90) return "Senior";
+    if(hours >= 60) return "Junior";
+    if(hours >= 30) return "Sophomore";
+    return "Freshman";
+  }
+  var STANDING_HOURS = { freshman:0, sophomore:30, junior:60, senior:90 };
+
+  function electiveId(year, progKey, semIdx, blockIdx){
+    return year + ":" + progKey + ":" + semIdx + ":" + blockIdx;
+  }
+
+  function earnedHours(){
+    var total = 0;
+    for(var code in DATA.courses){
+      if(state.checked[code]) total += Number(DATA.courses[code].credits || 0);
+    }
+    for(var id in state.electives){
+      var e = state.electives[id];
+      if(e && e.done) total += Number(e.hours || 0);
+    }
+    return total;
+  }
+
+  function reqLabel(course){
+    var c = DATA.courses[course.code];
+    if(!c) return "";
+    var parts = [];
+    var pr = c.prereq;
+    if(pr){
+      if(pr.course_groups && pr.course_groups.length){
+        pr.course_groups.forEach(function(group){
+          parts.push(group.join(" or "));
+        });
+      }
+      if(pr.standing){
+        var need = STANDING_HOURS[pr.standing] || 0;
+        parts.push(cap(pr.standing) + " standing (" + need + "+ hrs)");
+      }
+    }
+    return parts;
+  }
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function isUnlocked(code, totalHours){
+    var c = DATA.courses[code];
+    if(!c || !c.prereq) return true;
+    var pr = c.prereq;
+    var ok = true;
+    (pr.course_groups || []).forEach(function(group){
+      var satisfied = group.some(function(g){ return !!state.checked[g]; });
+      if(!satisfied) ok = false;
+    });
+    if(pr.standing){
+      var need = STANDING_HOURS[pr.standing] || 0;
+      if(totalHours < need) ok = false;
+    }
+    return ok;
+  }
+
+  function missingReqs(code, totalHours){
+    var c = DATA.courses[code];
+    if(!c || !c.prereq) return [];
+    var pr = c.prereq;
+    var missing = [];
+    (pr.course_groups || []).forEach(function(group){
+      var satisfied = group.some(function(g){ return !!state.checked[g]; });
+      if(!satisfied) missing.push("Requires " + group.join(" or "));
+    });
+    if(pr.standing){
+      var need = STANDING_HOURS[pr.standing] || 0;
+      if(totalHours < need) missing.push("Requires " + cap(pr.standing) + " standing (" + need + "+ credit hrs)");
+    }
+    return missing;
+  }
+
+  function setCourseChecked(code, isChecked, siblingCodes){
+    state.checked[code] = isChecked;
+    if(siblingCodes){
+      siblingCodes.forEach(function(sc){
+        if(sc !== code) state.checked[sc] = false;
+      });
+    }
+    saveState();
+    render();
+  }
+
+  function courseRow(course, totalHours, siblingCodes){
+    var code = course.code;
+    var meta = DATA.courses[code] || {};
+    var unlocked = isUnlocked(code, totalHours);
+    var checked = !!state.checked[code];
+    var row = document.createElement("label");
+    row.className = "row" + (!unlocked && !checked ? " locked" : "") + (checked ? " completed" : "");
+
+    if(!unlocked && !checked){
+      var missing = missingReqs(code, totalHours);
+      if(missing.length) row.setAttribute("data-tip", missing.join(" · "));
+    } else if(meta.prereq && ((meta.prereq.course_groups||[]).length || meta.prereq.standing)){
+      var reqs = reqLabel(course);
+      if(reqs.length) row.setAttribute("data-tip", "Prereq: " + reqs.join(", "));
+    }
+
+    var input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = checked;
+    input.disabled = (!unlocked && !checked);
+    input.addEventListener("change", function(){
+      setCourseChecked(code, input.checked, siblingCodes);
+    });
+
+    var codeSpan = document.createElement("span");
+    codeSpan.className = "code";
+    codeSpan.textContent = code;
+
+    var titleSpan = document.createElement("span");
+    titleSpan.className = "title";
+    titleSpan.textContent = course.title || (meta.title || "");
+    if(meta.termsOffered === "Fall" || meta.termsOffered === "Spring"){
+      var termBadge = document.createElement("span");
+      termBadge.className = "term-badge";
+      termBadge.textContent = meta.termsOffered + " only";
+      titleSpan.appendChild(document.createTextNode(" "));
+      titleSpan.appendChild(termBadge);
+    }
+
+    var credSpan = document.createElement("span");
+    credSpan.className = "credits num";
+    credSpan.textContent = (course.credits != null ? course.credits : meta.credits) + " hr";
+
+    var icoSpan = document.createElement("span");
+    if(!unlocked && !checked){
+      icoSpan.innerHTML = '<svg class="lock-ico" viewBox="0 0 24 24"><use href="#ico-lock"></use></svg>';
+    }
+
+    row.appendChild(input);
+    row.appendChild(codeSpan);
+    row.appendChild(titleSpan);
+    row.appendChild(credSpan);
+    row.appendChild(icoSpan);
+    return row;
+  }
+
+  function choiceBlock(block, totalHours){
+    var wrap = document.createElement("div");
+    wrap.className = "choice-group";
+    var label = document.createElement("div");
+    label.className = "choice-label";
+    label.textContent = "Choose one";
+    wrap.appendChild(label);
+
+    var groupName = "choice_" + Math.random().toString(36).slice(2);
+    var siblingCodes = block.options.map(function(o){ return o.code; });
+    block.options.forEach(function(opt){
+      var row = courseRow(opt, totalHours, siblingCodes);
+      var input = row.querySelector("input");
+      input.type = "radio";
+      input.name = groupName;
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
+  function electiveRow(block, year, progKey, semIdx, blockIdx){
+    var id = electiveId(year, progKey, semIdx, blockIdx);
+    var rec = state.electives[id] || { done:false, note:"", hours: block.hours };
+    var row = document.createElement("div");
+    row.className = "elective-row" + (rec.done ? " filled" : "");
+
+    var label = document.createElement("span");
+    label.className = "elabel";
+    label.textContent = block.label;
+    row.appendChild(label);
+
+    var hrs = document.createElement("span");
+    hrs.className = "ehours num";
+    hrs.textContent = block.hours + " hr" + (block.hours === 1 ? "" : "s") + (block.grade_c_required ? " · C or better" : "");
+    row.appendChild(hrs);
+
+    function commit(){
+      state.electives[id] = rec;
+      saveState();
+      render();
+    }
+
+    if(block.genEdArea && DATA.genEd[block.genEdArea]){
+      var select = document.createElement("select");
+      var placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Select course taken…";
+      select.appendChild(placeholder);
+      DATA.genEd[block.genEdArea].courses.forEach(function(c){
+        var seen = {};
+        var key = c.code;
+        if(seen[key]) return;
+        seen[key] = true;
+        var o = document.createElement("option");
+        o.value = c.code;
+        o.textContent = c.code + " — " + c.title;
+        if(rec.note === c.code) o.selected = true;
+        select.appendChild(o);
+      });
+      select.addEventListener("change", function(){
+        rec.note = select.value;
+        rec.done = !!select.value;
+        rec.hours = block.hours;
+        commit();
+      });
+      row.appendChild(select);
+    } else {
+      var textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.placeholder = "Course taken (optional)";
+      textInput.value = rec.note || "";
+      textInput.addEventListener("input", function(){
+        rec.note = textInput.value;
+        rec.hours = block.hours;
+        state.electives[id] = rec;
+        saveState();
+      });
+      row.appendChild(textInput);
+
+      var doneWrap = document.createElement("label");
+      doneWrap.className = "ecomplete";
+      var doneBox = document.createElement("input");
+      doneBox.type = "checkbox";
+      doneBox.checked = !!rec.done;
+      doneBox.addEventListener("change", function(){
+        rec.done = doneBox.checked;
+        rec.hours = block.hours;
+        commit();
+      });
+      doneWrap.appendChild(doneBox);
+      doneWrap.appendChild(document.createTextNode("Done"));
+      row.appendChild(doneWrap);
+    }
+
+    if(block.label && /Natural Sciences|Fine Arts|Social/i.test(block.label) === false){
+      // no extra hint
+    }
+    return row;
+  }
+
+  function render(){
+    var prog = DATA.programs[state.year][state.concentration];
+    catalogTag.textContent = prog.catalogYear + " Catalog · " + prog.title.split(", ").pop() + ", " + prog.totalHours + " hrs";
+    catalogYearFoot.textContent = prog.catalogYear;
+
+    var yearSelect = document.getElementById("yearSelect");
+    if(yearSelect.value !== state.year) yearSelect.value = state.year;
+
+    document.querySelectorAll(".conc-btn").forEach(function(btn){
+      var sel = btn.getAttribute("data-conc") === state.concentration;
+      btn.setAttribute("aria-selected", sel ? "true" : "false");
+    });
+
+    var totalHours = earnedHours();
+    var pct = Math.min(100, Math.round((totalHours / prog.totalHours) * 100));
+    var offset = RING_CIRC - (RING_CIRC * Math.min(1, totalHours / prog.totalHours));
+    ringFill.style.strokeDashoffset = String(offset);
+    pctLabel.textContent = pct + "%";
+    hoursLabel.textContent = totalHours + " of " + prog.totalHours + " hrs";
+    var standing = classify(totalHours);
+    standingChip.textContent = standing + " standing";
+    standingChip.className = "chip " + (standing === "Senior" ? "success" : "blue");
+
+    timelineEl.innerHTML = "";
+    prog.semesters.forEach(function(sem, semIdx){
+      var section = document.createElement("section");
+      section.className = "term";
+
+      var head = document.createElement("div");
+      head.className = "term-head";
+      var h2 = document.createElement("h2");
+      h2.textContent = sem.label;
+      var hoursSpan = document.createElement("span");
+      hoursSpan.className = "term-hours num";
+      hoursSpan.textContent = sem.hours + " hrs";
+      head.appendChild(h2);
+      head.appendChild(hoursSpan);
+      section.appendChild(head);
+
+      var termEarned = 0;
+      var termTotal = sem.hours;
+
+      var rows = document.createElement("div");
+      rows.className = "rows";
+      sem.blocks.forEach(function(block, blockIdx){
+        if(block.block === "course"){
+          if(state.checked[block.code]) termEarned += Number(block.credits || 0);
+          rows.appendChild(courseRow(block, totalHours));
+        } else if(block.block === "choice"){
+          var anyChecked = block.options.some(function(o){ return state.checked[o.code]; });
+          if(anyChecked){
+            var chosen = block.options.filter(function(o){ return state.checked[o.code]; })[0];
+            termEarned += Number(chosen.credits || 0);
+          }
+          rows.appendChild(choiceBlock(block, totalHours));
+        } else if(block.block === "elective"){
+          var id = electiveId(state.year, state.concentration, semIdx, blockIdx);
+          var rec = state.electives[id];
+          if(rec && rec.done) termEarned += Number(block.hours || 0);
+          rows.appendChild(electiveRow(block, state.year, state.concentration, semIdx, blockIdx));
+        }
+      });
+      section.appendChild(rows);
+
+      var track = document.createElement("div");
+      track.className = "term-progress-track";
+      var fill = document.createElement("div");
+      fill.className = "term-progress-fill";
+      fill.style.width = Math.min(100, Math.round((termEarned/termTotal)*100)) + "%";
+      track.appendChild(fill);
+      section.appendChild(track);
+
+      timelineEl.appendChild(section);
+    });
+
+    if(prog.generalNotes && prog.generalNotes.length){
+      var notes = document.createElement("div");
+      notes.className = "notes-block";
+      notes.innerHTML = "<strong>Catalog notes:</strong> " + prog.generalNotes.map(function(n){
+        return n.replace(/</g,"&lt;");
+      }).join(" &middot; ");
+      timelineEl.appendChild(notes);
+    }
+  }
+
+  document.querySelectorAll(".conc-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      state.concentration = btn.getAttribute("data-conc");
+      saveState();
+      render();
+    });
+  });
+
+  var yearSelectEl = document.getElementById("yearSelect");
+  DATA.years.forEach(function(y){
+    var o = document.createElement("option");
+    o.value = y;
+    o.textContent = y + " Catalog";
+    yearSelectEl.appendChild(o);
+  });
+  yearSelectEl.value = state.year;
+  yearSelectEl.addEventListener("change", function(){
+    state.year = yearSelectEl.value;
+    saveState();
+    render();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if(confirm("Clear all checked courses and elective choices? This can't be undone.")){
+      state.checked = {};
+      state.electives = {};
+      saveState();
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
