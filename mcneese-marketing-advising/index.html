@@ -153,6 +153,30 @@
   .chip.success{background:var(--success-soft); color:var(--success);}
   .standing-note{font-size:11px; color:var(--ink-muted); margin:0;}
 
+  .transfer-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; gap:8px;}
+  .transfer-head .field-label{margin:0;}
+  .transfer-note{font-size:11px; color:var(--ink-muted); line-height:1.5; margin:0 0 10px;}
+  .transfer-list{display:flex; flex-direction:column; gap:8px; margin-bottom:8px;}
+  .transfer-empty{font-size:11.5px; color:var(--ink-muted); padding:2px 2px 8px;}
+  .transfer-row{
+    border:1px solid var(--border); border-radius:8px; padding:8px;
+    display:flex; flex-direction:column; gap:6px; background:var(--surface-2);
+  }
+  .transfer-row .t-line{display:flex; gap:6px; align-items:center;}
+  .transfer-row input{
+    font-family:var(--font-body); font-size:12px; padding:6px 7px; border-radius:6px;
+    border:1px solid var(--border); background:var(--surface); color:var(--ink); min-width:0;
+  }
+  .transfer-row input.t-label{flex:1 1 auto;}
+  .transfer-row input.t-institution{flex:1 1 auto;}
+  .transfer-row input.t-hours{width:52px; text-align:right; flex:none;}
+  .t-remove{
+    background:transparent; border:1px solid var(--border); color:var(--ink-muted);
+    border-radius:6px; width:24px; height:26px; cursor:pointer; font-size:14px; line-height:1; flex:none;
+  }
+  .t-remove:hover{border-color:#c0392b; color:#c0392b;}
+  .transfer-add-btn{border-style:dashed; margin-top:2px;}
+
   .ghost-btn{
     width:100%; background:transparent; border:1px solid var(--border); color:var(--ink-muted);
     padding:9px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:600;
@@ -269,6 +293,7 @@
     .app{grid-template-columns:1fr; padding:0 6px 20px; gap:14px; max-width:100%;}
     .rail{position:static; gap:10px;}
     #printBtn, #resetBtn{display:none;}
+    .t-remove, .transfer-add-btn{display:none;}
     .print-only{display:block;}
     .card, .term{box-shadow:none; border:1px solid #d3d8d0;}
     .term{break-inside:avoid; page-break-inside:avoid;}
@@ -328,6 +353,20 @@
       </div>
     </div>
 
+    <div class="card transfer-card">
+      <div class="transfer-head">
+        <span class="field-label">Summer &amp; Transfer Credits</span>
+        <span class="chip blue" id="transferHoursChip">0 hrs</span>
+      </div>
+      <p class="transfer-note">
+        Credits from summer terms or another institution. These add to your total hours above but don&rsquo;t
+        automatically check off a specific requirement below &mdash; confirm which requirement they satisfy with
+        your advisor or Degree Works.
+      </p>
+      <div class="transfer-list" id="transferList"></div>
+      <button class="ghost-btn transfer-add-btn" id="addTransferBtn">+ Add credit</button>
+    </div>
+
     <button class="ghost-btn print-btn" id="printBtn">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
       Print / Save as PDF
@@ -362,7 +401,7 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
       var raw = localStorage.getItem(STORAGE_KEY);
       if(raw) return JSON.parse(raw);
     }catch(e){}
-    return { concentration:"digital", year: DATA.defaultYear, checked:{}, electives:{} };
+    return { concentration:"digital", year: DATA.defaultYear, checked:{}, electives:{}, extraCredits:[] };
   }
   function saveState(){
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
@@ -371,6 +410,7 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
   var state = loadState();
   if(!state.checked) state.checked = {};
   if(!state.electives) state.electives = {};
+  if(!state.extraCredits) state.extraCredits = [];
   if(!state.concentration) state.concentration = "digital";
   if(!state.year || DATA.years.indexOf(state.year) === -1) state.year = DATA.defaultYear;
 
@@ -379,6 +419,8 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
   var pctLabel = document.getElementById("pctLabel");
   var hoursLabel = document.getElementById("hoursLabel");
   var standingChip = document.getElementById("standingChip");
+  var transferHoursChip = document.getElementById("transferHoursChip");
+  var transferListEl = document.getElementById("transferList");
   var catalogTag = document.getElementById("catalogTag");
   var catalogYearFoot = document.getElementById("catalogYearFoot");
   var RING_CIRC = 2 * Math.PI * 36;
@@ -395,6 +437,12 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
     return year + ":" + progKey + ":" + semIdx + ":" + blockIdx;
   }
 
+  function extraCreditHours(){
+    var total = 0;
+    (state.extraCredits || []).forEach(function(c){ total += Number(c.hours || 0); });
+    return total;
+  }
+
   function earnedHours(){
     var total = 0;
     for(var code in DATA.courses){
@@ -404,7 +452,93 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
       var e = state.electives[id];
       if(e && e.done) total += Number(e.hours || 0);
     }
+    total += extraCreditHours();
     return total;
+  }
+
+  function updateProgressStats(){
+    var prog = DATA.programs[state.year][state.concentration];
+    var totalHours = earnedHours();
+    var pct = Math.min(100, Math.round((totalHours / prog.totalHours) * 100));
+    var offset = RING_CIRC - (RING_CIRC * Math.min(1, totalHours / prog.totalHours));
+    ringFill.style.strokeDashoffset = String(offset);
+    pctLabel.textContent = pct + "%";
+    hoursLabel.textContent = totalHours + " of " + prog.totalHours + " hrs";
+    var standing = classify(totalHours);
+    standingChip.textContent = standing + " standing";
+    standingChip.className = "chip " + (standing === "Senior" ? "success" : "blue");
+    transferHoursChip.textContent = extraCreditHours() + " hrs";
+  }
+
+  function renderTransferList(){
+    transferListEl.innerHTML = "";
+    if(!state.extraCredits || state.extraCredits.length === 0){
+      var empty = document.createElement("p");
+      empty.className = "transfer-empty";
+      empty.textContent = "No summer or transfer credits added yet.";
+      transferListEl.appendChild(empty);
+      return;
+    }
+    state.extraCredits.forEach(function(entry, idx){
+      var row = document.createElement("div");
+      row.className = "transfer-row";
+
+      var line1 = document.createElement("div");
+      line1.className = "t-line";
+      var labelInput = document.createElement("input");
+      labelInput.type = "text";
+      labelInput.className = "t-label";
+      labelInput.placeholder = "Course / description";
+      labelInput.value = entry.label || "";
+      labelInput.addEventListener("input", function(){
+        state.extraCredits[idx].label = labelInput.value;
+        saveState();
+      });
+      line1.appendChild(labelInput);
+
+      var line2 = document.createElement("div");
+      line2.className = "t-line";
+      var instInput = document.createElement("input");
+      instInput.type = "text";
+      instInput.className = "t-institution";
+      instInput.placeholder = "Institution (or “Summer”)";
+      instInput.value = entry.institution || "";
+      instInput.addEventListener("input", function(){
+        state.extraCredits[idx].institution = instInput.value;
+        saveState();
+      });
+      var hoursInput = document.createElement("input");
+      hoursInput.type = "number";
+      hoursInput.className = "t-hours";
+      hoursInput.min = "0";
+      hoursInput.step = "0.5";
+      hoursInput.placeholder = "Hrs";
+      hoursInput.value = entry.hours || "";
+      hoursInput.addEventListener("input", function(){
+        state.extraCredits[idx].hours = Number(hoursInput.value) || 0;
+        saveState();
+        updateProgressStats();
+      });
+      var removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "t-remove";
+      removeBtn.setAttribute("aria-label", "Remove credit");
+      removeBtn.title = "Remove";
+      removeBtn.textContent = "×";
+      removeBtn.addEventListener("click", function(){
+        state.extraCredits.splice(idx, 1);
+        saveState();
+        renderTransferList();
+        updateProgressStats();
+      });
+
+      line2.appendChild(instInput);
+      line2.appendChild(hoursInput);
+      line2.appendChild(removeBtn);
+      row.appendChild(line1);
+      row.appendChild(line2);
+      transferListEl.appendChild(row);
+    });
   }
 
   function reqLabel(course){
@@ -644,15 +778,8 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
       btn.setAttribute("aria-selected", sel ? "true" : "false");
     });
 
+    updateProgressStats();
     var totalHours = earnedHours();
-    var pct = Math.min(100, Math.round((totalHours / prog.totalHours) * 100));
-    var offset = RING_CIRC - (RING_CIRC * Math.min(1, totalHours / prog.totalHours));
-    ringFill.style.strokeDashoffset = String(offset);
-    pctLabel.textContent = pct + "%";
-    hoursLabel.textContent = totalHours + " of " + prog.totalHours + " hrs";
-    var standing = classify(totalHours);
-    standingChip.textContent = standing + " standing";
-    standingChip.className = "chip " + (standing === "Senior" ? "success" : "blue");
 
     timelineEl.innerHTML = "";
     prog.semesters.forEach(function(sem, semIdx){
@@ -751,6 +878,15 @@ const DATA = {"years":["2022-2023","2023-2024","2024-2025","2025-2026","2026-202
     window.print();
   });
 
+  document.getElementById("addTransferBtn").addEventListener("click", function(){
+    if(!state.extraCredits) state.extraCredits = [];
+    state.extraCredits.push({label:"", institution:"", hours:0});
+    saveState();
+    renderTransferList();
+    updateProgressStats();
+  });
+
+  renderTransferList();
   render();
 })();
 </script>
