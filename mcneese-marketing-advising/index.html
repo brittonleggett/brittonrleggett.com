@@ -12,15 +12,18 @@
     --ink:#1b2430;
     --ink-muted:#5b6472;
     --border:#dbe0d8;
-    --accent:#96721e;
-    --accent-strong:#7a5a17;
-    --accent-soft:#f2e6c9;
-    --blue:#2e5d8a;
-    --blue-soft:#e3edf6;
+    --accent:#e0b400;
+    --accent-strong:#8a6a00;
+    --accent-soft:#fdf3d0;
+    --blue:#00529b;
+    --blue-soft:#e2edf7;
     --success:#3f7857;
     --success-soft:#e2efe6;
     --locked:#9aa0a6;
     --locked-soft:#eceeec;
+    --mcneese-blue:#00529b;
+    --mcneese-blue-dark:#003764;
+    --mcneese-gold:#ffd300;
     --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
     --radius: 10px;
     --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
@@ -35,9 +38,9 @@
       --ink:#e7e9e4;
       --ink-muted:#98a2ad;
       --border:#2b323b;
-      --accent:#d9a94a;
-      --accent-strong:#e9bc63;
-      --accent-soft:#3a301c;
+      --accent:#ffd300;
+      --accent-strong:#ffe066;
+      --accent-soft:#3a2f10;
       --blue:#6fa8d8;
       --blue-soft:#1c2b38;
       --success:#6fbf95;
@@ -49,15 +52,15 @@
   }
   :root[data-theme="dark"]{
     --bg:#12161b; --surface:#1a2028; --surface-2:#20262e; --ink:#e7e9e4; --ink-muted:#98a2ad;
-    --border:#2b323b; --accent:#d9a94a; --accent-strong:#e9bc63; --accent-soft:#3a301c;
+    --border:#2b323b; --accent:#ffd300; --accent-strong:#ffe066; --accent-soft:#3a2f10;
     --blue:#6fa8d8; --blue-soft:#1c2b38; --success:#6fbf95; --success-soft:#1b2f24;
     --locked:#6b7480; --locked-soft:#232a31;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
   }
   :root[data-theme="light"]{
     --bg:#eef1ee; --surface:#ffffff; --surface-2:#f5f7f3; --ink:#1b2430; --ink-muted:#5b6472;
-    --border:#dbe0d8; --accent:#96721e; --accent-strong:#7a5a17; --accent-soft:#f2e6c9;
-    --blue:#2e5d8a; --blue-soft:#e3edf6; --success:#3f7857; --success-soft:#e2efe6;
+    --border:#dbe0d8; --accent:#e0b400; --accent-strong:#8a6a00; --accent-soft:#fdf3d0;
+    --blue:#00529b; --blue-soft:#e2edf7; --success:#3f7857; --success-soft:#e2efe6;
     --locked:#9aa0a6; --locked-soft:#eceeec;
     --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
   }
@@ -91,12 +94,17 @@
     position:sticky; top:20px;
     display:flex; flex-direction:column; gap:18px;
   }
+  .brand{
+    background:linear-gradient(135deg, var(--mcneese-blue) 0%, var(--mcneese-blue-dark) 100%);
+    border-radius:var(--radius); padding:18px 18px 16px; box-shadow:var(--shadow);
+    border-top:3px solid var(--mcneese-gold);
+  }
   .brand .eyebrow{
     display:block; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
-    color:var(--ink-muted); margin-bottom:6px; font-weight:600;
+    color:var(--mcneese-gold); margin-bottom:6px; font-weight:700;
   }
-  .brand h1{font-size:24px; line-height:1.15; margin-bottom:6px;}
-  .catalog-tag{margin:0; font-size:12.5px; color:var(--ink-muted);}
+  .brand h1{font-size:24px; line-height:1.15; margin-bottom:6px; color:#fff;}
+  .catalog-tag{margin:0; font-size:12.5px; color:rgba(255,255,255,.78);}
 
   .card{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
