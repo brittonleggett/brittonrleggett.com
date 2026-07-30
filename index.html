@@ -111,6 +111,21 @@
     }
     @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
 
+    .drop-dot {
+      display: inline-block;
+      animation: dropDot .7s cubic-bezier(.34,1.1,.4,1) 1.3s both;
+    }
+    @keyframes dropDot {
+      0%   { transform: translateY(-2.2em); opacity: 0; }
+      55%  { transform: translateY(.12em); opacity: 1; }
+      72%  { transform: translateY(-.06em); }
+      86%  { transform: translateY(.03em); }
+      100% { transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .drop-dot { animation: none; }
+    }
+
     /* SECTIONS */
     section { padding: 5rem 2rem; }
     .container { max-width: 1100px; margin: 0 auto; }
@@ -376,7 +391,7 @@
 <section id="hero">
   <div class="hero-content">
     <div class="hero-badge"><span></span>Academic Portfolio</div>
-    <h1>Britton R. Leggett</h1>
+    <h1>Britton R. Leggett, Ph.D<span class="drop-dot">.</span></h1>
     <p class="hero-subtitle">Assistant Professor of Marketing</p>
     <p class="hero-institution">McNeese State University &nbsp;&middot;&nbsp; College of Business</p>
     <div class="hero-ctas">
