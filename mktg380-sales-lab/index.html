@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MKTG 380 — SPIN Sales Simulation</title>
+<style>
+  /* Design system reused from the Course TA page so the lab matches the rest
+     of the site in both light and dark mode. */
+  :root{
+    --bg:#eef1ee; --surface:#ffffff; --surface-2:#f5f7f3; --ink:#1b2430; --ink-muted:#5b6472;
+    --border:#dbe0d8; --accent:#e0b400; --accent-strong:#8a6a00; --accent-soft:#fdf3d0;
+    --blue:#00529b; --blue-soft:#e2edf7; --success:#3f7857; --success-soft:#e2efe6;
+    --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
+    --radius: 10px;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161b; --surface:#1a2028; --surface-2:#20262e; --ink:#e7e9e4; --ink-muted:#98a2ad;
+      --border:#2b323b; --accent:#ffd300; --accent-strong:#ffe066; --accent-soft:#3a2f10;
+      --blue:#6fa8d8; --blue-soft:#1c2b38; --success:#6fbf95; --success-soft:#1b2f24;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+  h1{font-family:var(--font-display); font-weight:700; margin:0 0 4px; font-size:23px;}
+  .wrap{max-width:780px; margin:0 auto; padding:26px 18px 60px;}
+  .subtitle{color:var(--ink-muted); font-size:13.5px; margin:0 0 18px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;}
+
+  .gate{padding:28px 22px; text-align:center;}
+  .gate p{color:var(--ink-muted); font-size:13.5px; margin:0 auto 14px; max-width:430px;}
+  .gate-row{display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
+  .gate input{border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:14px; background:var(--surface); color:var(--ink); width:220px;}
+  .btn{font-family:inherit; font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:8px; border:none; background:var(--accent); color:#3a2c00; cursor:pointer;}
+  .btn.ghost{background:var(--surface-2); color:var(--ink); border:1px solid var(--border);}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .err{color:#b23; font-size:12.5px; margin-top:10px; min-height:16px;}
+
+  .brief{padding:15px 18px; border-bottom:1px solid var(--border); background:var(--surface-2);}
+  .brief .co{font-family:var(--font-display); font-size:17px; font-weight:700;}
+  .brief .meta{font-size:12.5px; color:var(--ink-muted); margin:2px 0 8px;}
+  .brief .desc{font-size:13.5px;}
+  .brief .tag{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent-strong); background:var(--accent-soft); padding:2px 8px; border-radius:999px; margin-bottom:6px;}
+
+  .thread{padding:16px 18px; min-height:280px; max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:12px;}
+  .msg{max-width:88%; padding:10px 13px; border-radius:10px; font-size:14.5px; white-space:pre-wrap;}
+  .msg.student{align-self:flex-end; background:var(--blue-soft); color:var(--ink);}
+  .msg.buyer{align-self:flex-start; background:var(--surface-2); border:1px solid var(--border);}
+  .msg.system{align-self:center; background:transparent; color:var(--ink-muted); font-size:12.5px; text-align:center; max-width:100%;}
+  .msg.failed{align-self:flex-start; background:#fbe4e4; border:1px solid #e2a3a3; color:#7a1f1f; font-size:13px;}
+  .who{display:block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-muted); margin-bottom:3px;}
+  .typing{align-self:flex-start; color:var(--ink-muted); font-size:13px; font-style:italic;}
+
+  .composer{display:flex; gap:8px; padding:13px 16px; border-top:1px solid var(--border); background:var(--surface-2);}
+  .composer textarea{flex:1; resize:none; border:1px solid var(--border); border-radius:8px; padding:9px 11px; font-family:inherit; font-size:14px; background:var(--surface); color:var(--ink); min-height:44px; max-height:150px;}
+  .bar{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 16px; border-top:1px solid var(--border); font-size:12.5px; color:var(--ink-muted); flex-wrap:wrap;}
+
+  .done{padding:30px 22px; text-align:center;}
+  .done h2{font-family:var(--font-display); margin:0 0 6px; font-size:20px;}
+  .done p{color:var(--ink-muted); font-size:13.5px; max-width:460px; margin:0 auto 16px;}
+  .code{font-family:ui-monospace,Consolas,"Courier New",monospace; font-size:27px; font-weight:700; letter-spacing:.06em;
+        background:var(--success-soft); color:var(--success); border:1.5px dashed var(--success); border-radius:10px;
+        padding:16px 22px; display:inline-block; margin-bottom:12px; user-select:all;}
+  .copied{color:var(--success); font-size:12.5px; min-height:18px; margin-top:8px;}
+
+  .footnote{margin-top:14px; font-size:12px; color:var(--ink-muted); line-height:1.5;}
+  .hidden{display:none;}
+  dialog{border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); color:var(--ink); max-width:430px; width:92%; padding:20px;}
+  dialog::backdrop{background:rgba(0,0,0,.45);}
+  dialog p{font-size:13.5px; color:var(--ink-muted);}
+  .dlg-row{display:flex; gap:8px; justify-content:flex-end; margin-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>MKTG 380 — SPIN Sales Simulation</h1>
+  <p class="subtitle" id="subtitle">Personal Selling · McNeese State University</p>
+
+  <div class="card">
+
+    <!-- 1. password gate -->
+    <div class="gate" id="gate">
+      <p>Enter the course password from the assignment page in Canvas to begin your sales call.</p>
+      <div class="gate-row">
+        <input id="pw" type="password" placeholder="Course password" autocomplete="off">
+        <button class="btn" id="startBtn">Begin</button>
+      </div>
+      <div class="err" id="gateErr"></div>
+      <p class="footnote" style="margin-top:18px">This simulation does not ask for your name, initials, student ID, or email. When you finish you'll get a submission code to turn in on Canvas — that code is how your work is identified.</p>
+    </div>
+
+    <!-- 2. the call -->
+    <div id="callArea" class="hidden">
+      <div class="brief" id="brief"></div>
+      <div class="thread" id="thread"></div>
+      <div class="composer">
+        <textarea id="input" rows="1" placeholder="What do you say to the buyer?"></textarea>
+        <button class="btn" id="sendBtn">Send</button>
+      </div>
+      <div class="bar">
+        <span id="turnCount"></span>
+        <button class="btn ghost" id="endBtn">End Sales Call / Submit</button>
+      </div>
+    </div>
+
+    <!-- 3. completion -->
+    <div class="done hidden" id="doneArea">
+      <h2>Sales call submitted</h2>
+      <p>Copy the submission code below and paste it into the assignment in Canvas. This is how your instructor identifies your work — your transcript is saved under this code.</p>
+      <div class="code" id="code"></div>
+      <div><button class="btn" id="copyBtn">Copy code</button></div>
+      <div class="copied" id="copied"></div>
+      <p class="footnote" style="margin-top:20px">This call is now closed and cannot be reopened without instructor approval. You can leave this page once you've submitted the code in Canvas.</p>
+    </div>
+
+  </div>
+
+  <p class="footnote" id="foot">
+    You are representing McNeese Athletics. Your job in this call is to understand the buyer's business situation — not to push a product. Take the conversation wherever good questioning leads it, including toward "this isn't a fit right now."
+  </p>
+</div>
+
+<dialog id="confirmDlg">
+  <b>Submit this sales call?</b>
+  <p>Once submitted, this sales call cannot be reopened without instructor approval. You will not be able to send any more messages.</p>
+  <div class="dlg-row">
+    <button class="btn ghost" id="cancelSubmit">Keep talking</button>
+    <button class="btn" id="confirmSubmit">Submit call</button>
+  </div>
+</dialog>
+
+<script>
+  // ---------------------------------------------------------------------
+  // Set this to your deployed Worker URL, then commit. Nothing else in this
+  // file needs to change. No secrets live here — the password is checked
+  // server-side and the buyer's hidden brief never reaches this page.
+  // ---------------------------------------------------------------------
+  const WORKER_URL = "https://mktg380.britton-leggett.workers.dev";
+
+  const TOKEN_KEY = "mktg380_sales_lab_token";
+  const $ = (s) => document.querySelector(s);
+  let token = "";
+  let maxTurns = 18;
+  let turns = 0;
+  let sending = false;
+  let pendingRetryId = "";
+
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+  function api(path, body) {
+    return fetch(WORKER_URL + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {}),
+    }).then((r) => r.json().then((d) => ({ status: r.status, data: d })));
+  }
+
+  function addMsg(speaker, text, cls) {
+    const div = document.createElement("div");
+    div.className = "msg " + (cls || speaker);
+    if (speaker === "student" || speaker === "buyer") {
+      div.innerHTML = '<span class="who">' + (speaker === "student" ? "You" : "Buyer") + "</span>" + esc(text);
+    } else {
+      div.textContent = text;
+    }
+    $("#thread").appendChild(div);
+    $("#thread").scrollTop = $("#thread").scrollHeight;
+    return div;
+  }
+
+  function renderBrief(p, assignment) {
+    $("#brief").innerHTML =
+      '<span class="tag">' + esc(assignment || "Sales Call") + "</span>" +
+      '<div class="co">' + esc(p.company_name) + "</div>" +
+      '<div class="meta">' + esc(p.industry) + " · " + esc(p.buyer_name) + ", " + esc(p.buyer_title) + " · " + esc(p.company_size) + "</div>" +
+      '<div class="desc">' + esc(p.public_description) + "</div>";
+  }
+
+  function updateTurns() {
+    const left = maxTurns - turns;
+    $("#turnCount").textContent =
+      turns + " of " + maxTurns + " turns used" + (left <= 3 && left > 0 ? " — " + left + " left" : left <= 0 ? " — limit reached, end the call" : "");
+  }
+
+  function showCall() {
+    $("#gate").classList.add("hidden");
+    $("#doneArea").classList.add("hidden");
+    $("#callArea").classList.remove("hidden");
+  }
+
+  function showDone(code) {
+    $("#callArea").classList.add("hidden");
+    $("#gate").classList.add("hidden");
+    $("#doneArea").classList.remove("hidden");
+    $("#code").textContent = code;
+    $("#foot").classList.add("hidden");
+  }
+
+  function hydrate(d) {
+    maxTurns = d.max_turns || 18;
+    turns = d.student_turns || 0;
+    if (d.status === "submitted") { showDone(d.submission_code); return; }
+    renderBrief(d.persona, d.assignment_name);
+    $("#thread").innerHTML = "";
+    if (d.opening_line) addMsg("buyer", d.opening_line);
+    (d.messages || []).forEach((m) => addMsg(m.speaker, m.text));
+    updateTurns();
+    showCall();
+  }
+
+  // --- start / resume ---------------------------------------------------
+  async function begin(password) {
+    const resuming = !password;
+    $("#gateErr").textContent = "";
+    $("#startBtn").disabled = true;
+    try {
+      const body = password ? { password: password } : { session_token: token };
+      const { data } = await api("/api/start", body);
+      if (!data.ok) {
+        // A stale token (instructor deleted/reset the session) must not show
+        // the student a confusing "wrong password" error — just clear it and
+        // let them start fresh.
+        if (resuming) {
+          try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+          token = "";
+          if (data.closed) {
+            $("#gate").innerHTML = '<p style="font-size:14px">' + esc(data.error) + "</p>";
+          }
+          return;
+        }
+        $("#gateErr").textContent = data.error || "Could not start the simulation.";
+        return;
+      }
+      if (data.session_token) {
+        token = data.session_token;
+        try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+      }
+      hydrate(data);
+    } catch (e) {
+      $("#gateErr").textContent = "Couldn't reach the simulation. Check your connection and try again.";
+    } finally {
+      $("#startBtn").disabled = false;
+    }
+  }
+
+  $("#startBtn").onclick = () => {
+    const pw = $("#pw").value.trim();
+    if (!pw) { $("#gateErr").textContent = "Enter the course password."; return; }
+    begin(pw);
+  };
+  $("#pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#startBtn").click(); });
+
+  // --- sending ----------------------------------------------------------
+  async function send() {
+    if (sending) return;
+    const text = $("#input").value.trim();
+    if (!text) return;
+    if (turns >= maxTurns) {
+      addMsg("system", "You've used all " + maxTurns + " turns. Use End Sales Call to submit.");
+      return;
+    }
+
+    sending = true;
+    $("#sendBtn").disabled = true;
+    const clientMsgId = pendingRetryId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+    pendingRetryId = clientMsgId;
+
+    const failed = document.querySelector(".msg.failed");
+    if (failed) failed.remove();
+
+    const studentBubble = addMsg("student", text);
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.textContent = "…";
+    $("#thread").appendChild(typing);
+    $("#thread").scrollTop = $("#thread").scrollHeight;
+
+    try {
+      const { data } = await api("/api/message", { session_token: token, text: text, client_msg_id: clientMsgId });
+      typing.remove();
+      if (!data.ok) {
+        // The student's text stays in the box so Send retries cleanly, and the
+        // same client_msg_id means a retry can never post it twice.
+        studentBubble.remove();
+        addMsg("system", data.error || "Something went wrong.", "failed");
+        if (!data.retryable) pendingRetryId = "";
+        return;
+      }
+      $("#input").value = "";
+      pendingRetryId = "";
+      turns = data.student_turns;
+      maxTurns = data.max_turns || maxTurns;
+      addMsg("buyer", data.reply);
+      updateTurns();
+    } catch (e) {
+      typing.remove();
+      studentBubble.remove();
+      addMsg("system", "The buyer didn't respond — your message was kept. Press Send again.", "failed");
+    } finally {
+      sending = false;
+      $("#sendBtn").disabled = false;
+      $("#input").focus();
+    }
+  }
+
+  $("#sendBtn").onclick = send;
+  $("#input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+  $("#input").addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 150) + "px";
+  });
+
+  // --- submit -----------------------------------------------------------
+  $("#endBtn").onclick = () => $("#confirmDlg").showModal();
+  $("#cancelSubmit").onclick = () => $("#confirmDlg").close();
+  $("#confirmSubmit").onclick = async () => {
+    $("#confirmSubmit").disabled = true;
+    try {
+      const { data } = await api("/api/submit", { session_token: token });
+      $("#confirmDlg").close();
+      if (data.ok) showDone(data.submission_code);
+      else addMsg("system", data.error || "Could not submit — try again.", "failed");
+    } catch (e) {
+      $("#confirmDlg").close();
+      addMsg("system", "Could not submit — check your connection and try again.", "failed");
+    } finally {
+      $("#confirmSubmit").disabled = false;
+    }
+  };
+
+  $("#copyBtn").onclick = async () => {
+    const code = $("#code").textContent;
+    try {
+      await navigator.clipboard.writeText(code);
+      $("#copied").textContent = "Copied. Now paste it into Canvas.";
+    } catch (e) {
+      // Clipboard API needs a secure context; the code is select-all styled anyway.
+      $("#copied").textContent = "Select the code above and copy it manually.";
+    }
+  };
+
+  // --- boot -------------------------------------------------------------
+  try { token = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { token = ""; }
+  if (token) {
+    begin(null);
+  } else {
+    fetch(WORKER_URL + "/api/status")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && d.ok && !d.open) {
+          $("#gate").innerHTML = '<p style="font-size:14px">This simulation is currently closed. Contact your instructor if you believe this is an error.</p>';
+        } else if (d && d.assignment_name) {
+          $("#subtitle").textContent = d.assignment_name + " · Personal Selling · McNeese State University";
+        }
+      })
+      .catch(() => {});
+  }
+</script>
+</body>
+</html>
