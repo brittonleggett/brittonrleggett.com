@@ -344,6 +344,11 @@
     .media-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items: start; }
     .media-topics { display: flex; flex-wrap: wrap; gap: .6rem; }
     .media-topics span { background: var(--white); border: 1px solid rgba(0,75,134,.22); color: var(--navy); font-size: .88rem; font-weight: 500; padding: .5rem 1rem; border-radius: 999px; }
+    .media-photos { display: grid; grid-template-columns: 1.35fr 1fr; gap: 1rem; margin-bottom: 2.25rem; }
+    .media-photos figure { margin: 0; position: relative; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); height: 320px; }
+    .media-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .media-photos figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 2rem 1rem .8rem; background: linear-gradient(transparent, rgba(0,42,77,.88)); color: var(--white); font-size: .85rem; font-weight: 600; }
+    @media (max-width: 768px) { .media-photos { grid-template-columns: 1fr; } .media-photos figure { height: 240px; } }
     .media-card { background: var(--white); border: 1px solid var(--border); border-top: 4px solid var(--gold); border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow); }
     .media-card h3 { font-size: 1.05rem; color: var(--navy); margin-bottom: .6rem; }
     .media-card p { font-size: .9rem; color: var(--muted); margin-bottom: 1.25rem; }
@@ -641,6 +646,7 @@
     <figure class="otc-slide"><img src="images/otc-marsh.jpg" alt="Britton Leggett in a Louisiana marsh at sunrise" loading="lazy" style="object-position:60% 50%" /><figcaption><small>Louisiana</small>Sunrise in the marsh</figcaption></figure>
     <figure class="otc-slide"><img src="images/otc-superdome.jpg" alt="Britton Leggett with Neville Tigers football players in the Superdome" loading="lazy" /><figcaption><small>Neville Tigers</small>Game day in the Superdome</figcaption></figure>
     <figure class="otc-slide"><img src="images/otc-ring.jpg" alt="LHSAA state championship ring" loading="lazy" /><figcaption><small>Neville Tigers</small>Back-to-back LHSAA 4A state champions, 2014 &amp; 2015</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-olemiss.jpg" alt="Britton Leggett at an Ole Miss football game" loading="lazy" /><figcaption><small>Oxford, Mississippi</small>Game day at Vaught-Hemingway</figcaption></figure>
     <figure class="otc-slide"><img src="images/otc-deer.jpg" alt="Britton Leggett with a deer harvested with a bow" loading="lazy" /><figcaption><small>Louisiana</small>Deer season, during the rut</figcaption></figure>
     <figure class="otc-slide"><img src="images/otc-chainsaw.jpg" alt="Britton Leggett with a chainsaw after clearing storm debris" loading="lazy" /><figcaption><small>Work Day</small>Storm cleanup</figcaption></figure>
     <figure class="otc-slide"><img src="images/otc-crappie.jpg" alt="Britton Leggett with a crappie catch" loading="lazy" /><figcaption><small>On the water</small>A good day of crappie fishing</figcaption></figure>
@@ -950,6 +956,10 @@
     <div class="section-label">For Media &amp; Business</div>
     <h2 class="section-title">A Louisiana Marketing Expert You Can Call</h2>
     <div class="divider"></div>
+    <div class="media-photos">
+      <figure><img src="images/media-panel.jpg" alt="Britton Leggett speaking on a panel" loading="lazy" style="object-position:70% 50%" /><figcaption>On the panel</figcaption></figure>
+      <figure><img src="images/media-ams.jpg" alt="Britton Leggett with colleagues at the Academy of Marketing Science conference" loading="lazy" style="object-position:50% 35%" /><figcaption>Academy of Marketing Science</figcaption></figure>
+    </div>
     <div class="media-grid">
       <div>
         <p class="section-desc" style="margin-bottom:1.5rem">Available to journalists, chambers, and business groups across Louisiana for commentary, interviews, and talks on:</p>
