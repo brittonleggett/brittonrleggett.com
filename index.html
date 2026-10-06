@@ -43,7 +43,7 @@
       --gold:   #fbcd20;
       --gold-soft: #fff6d6;
       --light:  #eaf2fa;
-      --sand:   #f8f5f0;
+      --sand:   #f1f5fa;
       --text:   #1a1a2e;
       --muted:  #5a6474;
       --border: #dde3eb;
@@ -67,8 +67,8 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       backdrop-filter: blur(14px) saturate(160%);
-      background: rgba(255,255,255,.88);
-      border-bottom: 1px solid var(--border);
+      background: rgba(0,42,77,.96);
+      border-bottom: 3px solid var(--gold);
       height: 64px;
       display: flex; align-items: center;
     }
@@ -80,16 +80,18 @@
     .nav-logo {
       font-family: 'Playfair Display', serif;
       font-size: 1.15rem; font-weight: 700;
-      color: var(--navy); text-decoration: none;
+      color: var(--white); text-decoration: none;
+      display: inline-flex; align-items: center; gap: .6rem;
     }
+    .nav-logo img { width: 38px; height: 38px; background: var(--white); border-radius: 50%; padding: 3px; border: 2px solid var(--gold); }
     .nav-links { display: flex; gap: 1.35rem; list-style: none; white-space: nowrap; }
     .nav-logo { white-space: nowrap; }
     @media (max-width: 1100px) { .nav-links { gap: .95rem; } .nav-links a { font-size: .82rem; } }
     .nav-links a {
       text-decoration: none; font-size: .875rem; font-weight: 500;
-      color: var(--muted); transition: color .2s;
+      color: rgba(255,255,255,.85); transition: color .2s;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: var(--gold); }
 
     /* HERO */
     #hero {
@@ -106,6 +108,7 @@
       pointer-events: none;
     }
     .hero-content { position: relative; z-index: 1; max-width: 720px; }
+    .hero-logo { width: 96px; height: 96px; background: var(--white); border-radius: 50%; padding: 8px; border: 3px solid var(--gold); box-shadow: 0 8px 28px rgba(0,0,0,.3); margin: 0 auto 1.25rem; display: block; }
     .hero-badge {
       display: inline-flex; align-items: center; gap: .5rem;
       background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
@@ -160,7 +163,8 @@
     .container { max-width: 1100px; margin: 0 auto; }
     .section-label {
       font-size: .72rem; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: .6rem;
+      text-transform: uppercase; color: var(--blue); margin-bottom: .6rem;
+      display: inline-block; border-bottom: 2px solid var(--gold); padding-bottom: .15rem;
     }
     .section-title {
       font-family: 'Playfair Display', serif;
@@ -480,7 +484,7 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo">Britton R. Leggett</a>
+    <a href="#hero" class="nav-logo"><img src="images/school-logo.svg" alt="McNeese State University logo" />Britton R. Leggett</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#louisiana">Louisiana</a></li>
@@ -498,6 +502,7 @@
 <section id="hero">
   <img src="images/louisiana.svg" alt="" class="hero-boot" aria-hidden="true" />
   <div class="hero-content">
+    <img src="images/school-logo.svg" alt="McNeese State University Cowboys logo" class="hero-logo" />
     <div class="hero-badge"><span></span>A Louisianian, for Louisiana</div>
     <h1>Britton R. Leggett, Ph.D<span class="drop-dot">.</span></h1>
     <p class="hero-subtitle">The Louisiana marketing professor. Common sense, balanced, and questioning everyone. Assistant Professor of Marketing at McNeese State University, studying how Louisiana&rsquo;s businesses, industries, and communities market, sell, and earn public trust.</p>
@@ -1018,6 +1023,8 @@
 </section>
 
 <footer>
+  <img src="images/school-logo.svg" alt="McNeese State University logo" style="width:56px;height:56px;background:#fff;border-radius:50%;padding:4px;border:2px solid var(--gold);margin-bottom:.8rem" />
+  <p style="color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;margin-bottom:.4rem">McNeese State University &middot; College of Business</p>
   <p><strong>Britton R. Leggett, Ph.D.</strong> &nbsp;&middot;&nbsp; Assistant Professor of Marketing &nbsp;&middot;&nbsp; McNeese State University &nbsp;&middot;&nbsp; Lake Charles, Louisiana</p>
   <p style="margin-top:.4rem">&copy; 2026 Britton R. Leggett. All rights reserved.</p>
 </footer>
@@ -1030,7 +1037,7 @@
       if (e.isIntersecting) {
         navLinks.forEach(a => a.style.color = '');
         const active = document.querySelector('.nav-links a[href="#' + e.target.id + '"]');
-        if (active) active.style.color = 'var(--accent)';
+        if (active) active.style.color = 'var(--gold)';
       }
     });
   }, { threshold: 0.4 });
