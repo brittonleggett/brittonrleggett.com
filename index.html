@@ -305,6 +305,19 @@
     .story-map .pin-sub { fill: var(--gold); font: 600 16px Inter, sans-serif; letter-spacing: .06em; }
     @media (max-width: 860px) { .story-wrap { grid-template-columns: 1fr; } .story-map { max-width: 260px; margin: 0 auto; } }
 
+    /* OFF THE CLOCK CAROUSEL */
+    #offclock { background: var(--sand); padding: 4.5rem 0 4rem; }
+    #offclock .container { padding: 0 2rem; }
+    .otc-track { display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: .5rem 2rem 1rem; scrollbar-width: none; }
+    .otc-track::-webkit-scrollbar { display: none; }
+    .otc-slide { flex: 0 0 min(78vw, 380px); height: 460px; scroll-snap-align: center; position: relative; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin: 0; }
+    .otc-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .otc-slide figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.5rem 1.1rem 1rem; background: linear-gradient(transparent, rgba(0,42,77,.9)); color: var(--white); font-weight: 600; font-size: .95rem; }
+    .otc-slide figcaption small { display: block; color: var(--gold); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .15rem; }
+    .otc-controls { display: flex; justify-content: center; gap: .75rem; margin-top: 1rem; }
+    .otc-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--blue); background: var(--white); color: var(--blue); font-size: 1.2rem; cursor: pointer; transition: all .2s; }
+    .otc-btn:hover { background: var(--blue); color: var(--white); }
+
     /* STORY BAND */
     #story { background: var(--navy); color: var(--white); padding: 4rem 2rem; }
     .story-inner { text-align: left; }
@@ -586,20 +599,24 @@
   </div>
 </section>
 
-<section id="gallery">
-  <div class="gallery-strip">
-    <div class="gallery-item">
-      <img src="images/campus.jpg" alt="Campus" />
-      <div class="gallery-caption">McNeese State University</div>
-    </div>
-    <div class="gallery-item">
-      <img src="images/gallery-cypress-lake.jpg" alt="Louisiana cypress lake" />
-      <div class="gallery-caption">Louisiana Cypress</div>
-    </div>
-    <div class="gallery-item">
-      <img src="images/gallery-marsh.jpg" alt="Louisiana marsh at sunrise" />
-      <div class="gallery-caption">Louisiana Marsh</div>
-    </div>
+<section id="offclock" aria-label="Off the clock photos">
+  <div class="container">
+    <div class="section-label">Off the Clock</div>
+    <h2 class="section-title">Not Your Typical Professor</h2>
+    <p class="section-desc">Most days end in a classroom. The best ones end on the water or in the woods.</p>
+    <div class="divider" style="margin-bottom:1.5rem"></div>
+  </div>
+  <div class="otc-track" id="otcTrack">
+    <figure class="otc-slide"><img src="images/otc-salmon.jpg" alt="Britton Leggett holding a salmon in Alaska" loading="lazy" /><figcaption><small>Alaska</small>The salmon run</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-marsh.jpg" alt="Britton Leggett in a Louisiana marsh at sunrise" loading="lazy" style="object-position:60% 50%" /><figcaption><small>Louisiana</small>Sunrise in the marsh</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-deer.jpg" alt="Britton Leggett with a deer harvested with a bow" loading="lazy" /><figcaption><small>Louisiana</small>Deer season, during the rut</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-crappie.jpg" alt="Britton Leggett with a crappie catch" loading="lazy" /><figcaption><small>On the water</small>A good day of crappie fishing</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-minibike.jpg" alt="Old minibike beside a bayou" loading="lazy" /><figcaption><small>Back roads</small>Old minibike, older bayou</figcaption></figure>
+    <figure class="otc-slide"><img src="images/otc-cypress.jpg" alt="Louisiana cypress lake with waterfowl" loading="lazy" /><figcaption><small>Louisiana</small>Cypress and waterfowl</figcaption></figure>
+  </div>
+  <div class="otc-controls">
+    <button class="otc-btn" type="button" aria-label="Previous photo" onclick="otcMove(-1)">&#8249;</button>
+    <button class="otc-btn" type="button" aria-label="Next photo" onclick="otcMove(1)">&#8250;</button>
   </div>
 </section>
 
@@ -1035,6 +1052,17 @@
     });
   }, { threshold: 0.1 });
   cards.forEach(c => cardObserver.observe(c));
+
+  const otcTrack = document.getElementById('otcTrack');
+  function otcMove(dir) {
+    const step = otcTrack.querySelector('.otc-slide').offsetWidth + 16;
+    const atEnd = otcTrack.scrollLeft + otcTrack.clientWidth >= otcTrack.scrollWidth - 8;
+    if (dir > 0 && atEnd) otcTrack.scrollTo({ left: 0 });
+    else otcTrack.scrollBy({ left: dir * step });
+  }
+  let otcTimer = setInterval(() => otcMove(1), 5000);
+  ['mouseenter','touchstart','focusin'].forEach(ev => otcTrack.addEventListener(ev, () => clearInterval(otcTimer), { passive: true }));
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) clearInterval(otcTimer);
 
   function handleSubmit(e) {
     e.preventDefault();
