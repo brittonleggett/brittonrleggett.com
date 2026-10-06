@@ -521,7 +521,7 @@
     <img src="images/school-logo.svg" alt="McNeese State University Cowboys logo" class="hero-logo" />
     <div class="hero-badge"><span></span>A Louisianian, for Louisiana</div>
     <h1>Britton R. Leggett, Ph.D<span class="drop-dot">.</span></h1>
-    <blockquote class="hero-quote"><span class="q">&ldquo;</span>You don&rsquo;t need a weatherman<br />to know which way the wind blows.<span class="q">&rdquo;</span><cite>&mdash; Bob Dylan</cite></blockquote>
+    <blockquote class="hero-quote" id="heroQuote"><span class="q">&ldquo;</span>You don&rsquo;t need a weatherman<br />to know which way the wind blows.<span class="q">&rdquo;</span><cite>&mdash; Bob Dylan</cite></blockquote>
     <p class="hero-chair">JPMorgan Chase Professor in Business &middot; Outstanding Teacher Award, 2026</p>
     <p class="hero-subtitle">The Louisiana marketing professor. Common sense, balanced, and questioning everyone. Assistant Professor of Marketing at McNeese State University, studying how Louisiana&rsquo;s businesses, industries, and communities market, sell, and earn public trust.</p>
     <p class="hero-institution">McNeese State University &nbsp;&middot;&nbsp; College of Business &nbsp;&middot;&nbsp; Lake Charles, Louisiana</p>
@@ -1137,6 +1137,16 @@
   let otcTimer = setInterval(() => otcMove(1), 5000);
   ['mouseenter','touchstart','focusin'].forEach(ev => otcTrack.addEventListener(ev, () => clearInterval(otcTimer), { passive: true }));
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) clearInterval(otcTimer);
+
+  // Daily rotating hero quote (quotes.json). The static Dylan line stays as the no-JS fallback.
+  fetch('quotes.json', { cache: 'no-cache' }).then(r => r.json()).then(d => {
+    const qs = (d.quotes || []).filter(q => q.html && q.author);
+    if (qs.length < 2) return;
+    const day = Math.floor(Date.now() / 86400000);
+    const q = qs[day % qs.length];
+    document.getElementById('heroQuote').innerHTML =
+      '<span class="q">&ldquo;</span>' + q.html + '<span class="q">&rdquo;</span><cite>&mdash; ' + q.author + '</cite>';
+  }).catch(() => {});
 
   function handleSubmit(e) {
     e.preventDefault();

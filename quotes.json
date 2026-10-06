@@ -1,0 +1,12 @@
+{
+  "_note": "Rotating hero quotes. One shows per day. Add entries only through the site-quotes skill (attribution must be verified). Keep each quote to one line or short sentence.",
+  "quotes": [
+    {
+      "text": "You don't need a weatherman to know which way the wind blows.",
+      "html": "You don&rsquo;t need a weatherman<br />to know which way the wind blows.",
+      "author": "Bob Dylan",
+      "source": "\"Subterranean Homesick Blues\" (1965)",
+      "verified": "2026-10-06"
+    }
+  ]
+}
