@@ -1,0 +1,312 @@
+<!doctype html>
+<!-- MBA 530 AI Cases: student page. Claude for Britton R. Leggett, 2026-10-08; rubric view added 2026-10-09.
+     Static page for brittonrleggett.com/mba530-cases/. Holds no secrets; all logic lives in the mba530 Worker. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MBA 530 AI Cases</title>
+<style>
+:root{--bg:#f6f4f4;--card:#fff;--ink:#222;--muted:#5d5759;--line:#e0d8d9;--maroon:#882534;--maroon-d:#5e1722;--soft:#f7eef0;--blue:#2e5e8c;--blue-soft:#e8eff6;--ok:#3b6e4f}
+@media(prefers-color-scheme:dark){:root{--bg:#141012;--card:#1f191b;--ink:#ece8e9;--muted:#a99fa2;--line:#3a3033;--maroon:#e08a97;--maroon-d:#c46b79;--soft:#2a2124;--blue:#8fb4d8;--blue-soft:#1d2833;--ok:#7fc79b}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+header{background:#882534;color:#fff;padding:14px 16px}
+header h1{font:700 20px/1.2 Cambria,Georgia,serif;margin:0}header p{margin:2px 0 0;font-size:13px;opacity:.9}
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+h2{font:700 19px/1.3 Cambria,Georgia,serif;color:var(--maroon);margin:0 0 8px}
+label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+textarea{resize:vertical}
+button{font:inherit;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--maroon);color:#fff;cursor:pointer}
+button.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:600}
+.tabs button.on{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.tabs button.locked{opacity:.45}
+.meter{font-size:13px;color:var(--muted);margin-bottom:10px}
+.meter b{color:var(--ink)}
+.memo{white-space:pre-wrap;font-family:Georgia,serif;background:var(--soft);border-radius:10px;padding:16px;margin:0}
+.notice{font-size:12.5px;color:var(--muted);font-style:italic}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 4px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--maroon);color:#fff;font-size:13px}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.person{text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-weight:400}
+.person b{display:block;color:var(--maroon)}.person small{color:var(--muted)}
+.person.on{border-color:var(--maroon);background:var(--soft)}
+.chat{border:1px solid var(--line);border-radius:10px;padding:12px;height:360px;overflow-y:auto;background:var(--card)}
+.msg{max-width:82%;padding:8px 12px;border-radius:10px;margin:0 0 8px;white-space:pre-wrap}
+.msg.ai{background:var(--soft)}.msg.me{background:var(--blue-soft);margin-left:auto}
+.msg .who{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.send{display:flex;gap:8px;margin-top:8px}.send textarea{flex:1}
+.err{color:#b4232f;font-size:13px;min-height:18px;margin-top:6px}
+.code{font:700 28px/1.2 Consolas,monospace;letter-spacing:.06em;color:var(--maroon);margin:8px 0}
+.hidden{display:none}
+@media(max-width:600px){.msg{max-width:95%}.chat{height:300px}}
+</style>
+</head>
+<body>
+<header><h1>MBA 530 AI Cases</h1><p>Marketing and New Media Management · Centenary College of Louisiana</p></header>
+<div class="wrap">
+
+<!-- Start -->
+<div id="start" class="card" style="max-width:520px">
+  <h2>Start a case</h2>
+  <p class="notice">This simulation is anonymous. You will not enter your name. At the end you'll get a submission code and a transcript file to turn in on Canvas.</p>
+  <label for="caseSel">Case</label><select id="caseSel"><option>Loading…</option></select>
+  <label for="pw">Course password (from the Canvas assignment)</label><input id="pw" type="password" autocomplete="off">
+  <div style="margin-top:12px"><button id="startBtn">Start</button></div>
+  <div class="err" id="startErr"></div>
+</div>
+
+<!-- Rubric shown before starting (2026-10-09). Content lives in RUBRICS below, per case. -->
+<div id="preRubric" class="card hidden"><h2>How you'll be graded</h2><div class="rubricBody"></div></div>
+
+<!-- Workspace -->
+<div id="ws" class="hidden">
+  <div class="card" style="padding:12px 16px">
+    <h2 id="caseTitle" style="margin:0"></h2>
+    <div class="notice" id="caseSub"></div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button data-t="rubric">Rubric</button>
+    <button data-t="brief" class="on">1 · Briefing</button>
+    <button data-t="exhibits">2 · Exhibits</button>
+    <button data-t="interviews">3 · Interviews</button>
+    <button data-t="rec">4 · Recommendation</button>
+    <button data-t="board" id="boardTabBtn">5 · Board meeting</button>
+    <button data-t="done">6 · Submit</button>
+  </div>
+
+  <div id="t-rubric" class="card tab hidden"><h2>How you'll be graded</h2><div class="rubricBody"></div></div>
+
+  <div id="t-brief" class="card tab">
+    <p><b id="roleLine"></b> <span class="notice" id="timeLine"></span></p>
+    <pre class="memo" id="memo"></pre>
+    <p class="notice" id="fictional"></p>
+  </div>
+
+  <div id="t-exhibits" class="card tab hidden"><div id="exhibits"></div></div>
+
+  <div id="t-interviews" class="card tab hidden">
+    <div class="meter">Questions used: <b id="qUsed">0</b> of <b id="qMax">20</b> (shared across everyone you talk to)</div>
+    <div class="people" id="people"></div>
+    <div id="chatWrap" class="hidden">
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="send"><textarea id="q" rows="2" placeholder="Ask one clear question…"></textarea><button id="askBtn">Send</button></div>
+      <div class="err" id="askErr"></div>
+    </div>
+    <p class="notice" id="pickHint">Pick someone above to start the conversation.</p>
+  </div>
+
+  <div id="t-rec" class="card tab hidden">
+    <p>Fill in every part. When you submit, interviews close and the board meeting starts. You can't change the recommendation after that.</p>
+    <div id="form"></div>
+    <div style="margin-top:12px"><button id="recBtn">Submit recommendation &amp; start the board meeting</button></div>
+    <div class="err" id="recErr"></div>
+  </div>
+
+  <div id="t-board" class="card tab hidden">
+    <div class="meter"><span id="bWho">Board meeting</span>. Answer each challenge: <b id="bUsed">0</b> of <b id="bMax">4</b> answers.</div>
+    <div class="chat" id="bchat" aria-live="polite"></div>
+    <div class="send" id="bsend"><textarea id="b" rows="3" placeholder="Answer the challenge, using evidence from the case…"></textarea><button id="boardBtn">Send</button></div>
+    <div class="err" id="boardErr"></div>
+    <div id="boardDone" class="hidden"><p><b>The meeting is over.</b> Go to step 6 to submit.</p></div>
+  </div>
+
+  <div id="t-done" class="card tab hidden">
+    <div id="notReady"><p>Finish the board meeting first. Then come back here to get your submission code.</p></div>
+    <div id="ready" class="hidden"><p>Ready to finish? This locks the case.</p><button id="submitBtn">Finish &amp; get my submission code</button><div class="err" id="subErr"></div></div>
+    <div id="final" class="hidden">
+      <p>Your submission code:</p><div class="code" id="code"></div>
+      <p><button id="dlBtn">Download my transcript (.txt)</button></p>
+      <p><b>On Canvas, turn in all three:</b> (1) this code, (2) the transcript file, and (3) your 300–400 word reflection.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const WORKER_URL = "https://mba530.britton-leggett.workers.dev"; // set at deploy time
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let S = null, TOKEN = "", CASE = "", WHO = "";
+
+function store(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function post(path, body) {
+  return fetch(WORKER_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    .then(async (r) => ({ status: r.status, d: await r.json().catch(() => ({ ok: false, error: "Unexpected response." })) }));
+}
+const cid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+
+function tab(t) {
+  document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
+  document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("hidden", x.id !== "t-" + t));
+  if (t === "board") scroll("#bchat");
+  if (t === "interviews") scroll("#chat");
+}
+document.querySelectorAll("#tabs button").forEach((b) => (b.onclick = () => tab(b.dataset.t)));
+function scroll(sel) { const c = $(sel); c.scrollTop = c.scrollHeight; }
+
+function msgHtml(m, aiName) {
+  return '<div class="msg ' + (m.speaker === "student" ? "me" : "ai") + '"><span class="who">' +
+    esc(m.speaker === "student" ? "You" : aiName) + "</span>" + esc(m.text) + "</div>";
+}
+
+function render() {
+  const c = S.case;
+  $("#caseTitle").textContent = c.title; $("#caseSub").textContent = c.subtitle;
+  $("#bWho").textContent = c.board_label || "Board meeting"; $("#boardTabBtn").textContent = "5 · " + (c.board_tab || "Board meeting");
+  $("#roleLine").textContent = c.role; $("#timeLine").textContent = "Time: " + c.time_estimate;
+  $("#memo").textContent = c.briefing_memo; $("#fictional").textContent = c.fictional_notice;
+  $("#exhibits").innerHTML = c.exhibits.map((x) =>
+    "<h2>" + esc(x.title) + "</h2><table><thead><tr>" + x.columns.map((h) => "<th>" + esc(h) + "</th>").join("") +
+    "</tr></thead><tbody>" + x.rows.map((r) => "<tr>" + r.map((v) => "<td>" + esc(v) + "</td>").join("") + "</tr>").join("") +
+    "</tbody></table>" + (x.note ? '<p class="notice">' + esc(x.note) + "</p>" : "")).join("");
+  $("#qUsed").textContent = S.investigate_turns; $("#qMax").textContent = S.investigate_budget;
+  $("#people").innerHTML = c.characters.map((p) =>
+    '<button class="person' + (p.id === WHO ? " on" : "") + '" data-id="' + esc(p.id) + '"><b>' + esc(p.name) + "</b>" +
+    esc(p.title) + "<br><small>" + esc(p.blurb) + "</small></button>").join("");
+  document.querySelectorAll(".person").forEach((b) => (b.onclick = () => { WHO = b.dataset.id; render(); }));
+  if (WHO) {
+    const p = c.characters.find((x) => x.id === WHO);
+    const ms = S.messages.filter((m) => m.channel === WHO);
+    $("#chat").innerHTML = '<div class="msg ai"><span class="who">' + esc(p.name) + "</span>" + esc(p.opening_line) + "</div>" +
+      ms.map((m) => msgHtml(m, p.name)).join("");
+    $("#chatWrap").classList.remove("hidden"); $("#pickHint").classList.add("hidden"); scroll("#chat");
+  }
+  const interviewing = S.status === "investigate";
+  $("#q").disabled = $("#askBtn").disabled = !interviewing || S.investigate_turns >= S.investigate_budget;
+  if (!interviewing) $("#askErr").textContent = "Interviews are closed.";
+
+  // recommendation form
+  const rec = S.recommendation || {};
+  const draft = JSON.parse(load("m530_draft_" + CASE) || "{}");
+  if (!$("#form").dataset.built) {
+    $("#form").innerHTML = c.recommendation_form.map((f) =>
+      '<label for="f_' + esc(f.id) + '">' + esc(f.label) + '</label><textarea id="f_' + esc(f.id) + '" rows="' + (f.rows || 3) + '"></textarea>').join("");
+    $("#form").dataset.built = "1";
+    c.recommendation_form.forEach((f) => {
+      const el = $("#f_" + f.id); el.value = rec[f.id] || draft[f.id] || "";
+      el.oninput = () => { const d = {}; c.recommendation_form.forEach((g) => (d[g.id] = $("#f_" + g.id).value)); store("m530_draft_" + CASE, JSON.stringify(d)); };
+    });
+  }
+  c.recommendation_form.forEach((f) => ($("#f_" + f.id).disabled = !interviewing));
+  $("#recBtn").disabled = !interviewing;
+
+  // board
+  const bm = S.messages.filter((m) => m.channel === "board");
+  $("#bchat").innerHTML = bm.length ? bm.map((m) => msgHtml(m, "Board")).join("") : '<p class="notice">The meeting starts when you submit your recommendation.</p>';
+  $("#bUsed").textContent = S.board_turns; $("#bMax").textContent = S.board_max;
+  const boardOpen = S.status === "defend" && !S.board_closed;
+  $("#b").disabled = $("#boardBtn").disabled = !boardOpen;
+  $("#bsend").classList.toggle("hidden", !boardOpen);
+  $("#boardDone").classList.toggle("hidden", !(S.board_closed && S.status !== "submitted"));
+
+  // submit
+  $("#notReady").classList.toggle("hidden", S.board_closed || S.status === "submitted");
+  $("#ready").classList.toggle("hidden", !(S.board_closed && S.status !== "submitted"));
+  $("#final").classList.toggle("hidden", S.status !== "submitted");
+  if (S.submission_code) $("#code").textContent = S.submission_code;
+}
+
+async function start(resumeToken) {
+  $("#startErr").textContent = "";
+  const { d } = await post("/api/start", resumeToken ? { session_token: resumeToken } : { password: $("#pw").value, case_id: $("#caseSel").value });
+  if (!d.ok) { $("#startErr").textContent = d.error || "Could not start."; if (resumeToken) store("m530_token_" + CASE, null); return; }
+  if (d.session_token) { TOKEN = d.session_token; store("m530_token_" + d.case_id, TOKEN); }
+  CASE = d.case_id; S = d; showRubric(CASE); $("#preRubric").classList.add("hidden");
+  $("#start").classList.add("hidden"); $("#ws").classList.remove("hidden");
+  render();
+  tab(S.status === "submitted" ? "done" : S.status === "defend" ? "board" : "brief");
+}
+
+$("#startBtn").onclick = () => { CASE = $("#caseSel").value; const t = load("m530_token_" + CASE); if (t) { TOKEN = t; start(t); } else start(null); };
+$("#pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#startBtn").click(); });
+
+$("#askBtn").onclick = async () => {
+  const text = $("#q").value.trim(); if (!text || !WHO) return;
+  $("#askBtn").disabled = true; $("#askErr").textContent = "";
+  const id = $("#q").dataset.cid || cid(); $("#q").dataset.cid = id;
+  const { d } = await post("/api/ask", { session_token: TOKEN, character_id: WHO, text, client_msg_id: id });
+  if (d.ok) {
+    if (!d.duplicate) S.messages.push({ channel: WHO, speaker: "student", text }, { channel: WHO, speaker: "ai", text: d.reply });
+    S.investigate_turns = d.investigate_turns; $("#q").value = ""; delete $("#q").dataset.cid;
+  } else $("#askErr").textContent = d.error;
+  render(); $("#askBtn").disabled = S.investigate_turns >= S.investigate_budget;
+};
+$("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#askBtn").click(); } });
+
+$("#recBtn").onclick = async () => {
+  const rec = {}; S.case.recommendation_form.forEach((f) => (rec[f.id] = $("#f_" + f.id).value.trim()));
+  if (Object.values(rec).some((v) => !v)) { $("#recErr").textContent = "Fill in every part first."; return; }
+  if (!confirm("Submit your recommendation? Interviews will close and the board meeting will start.")) return;
+  $("#recBtn").disabled = true; $("#recErr").textContent = "Starting the meeting…";
+  const { d } = await post("/api/recommend", { session_token: TOKEN, recommendation: rec });
+  if (!d.ok) { $("#recErr").textContent = d.error; $("#recBtn").disabled = false; return; }
+  $("#recErr").textContent = ""; S.status = "defend"; S.recommendation = rec; S.board_turns = 0; S.board_max = d.board_max;
+  S.messages.push({ channel: "board", speaker: "ai", text: d.reply }); store("m530_draft_" + CASE, null);
+  render(); tab("board");
+};
+
+$("#boardBtn").onclick = async () => {
+  const text = $("#b").value.trim(); if (!text) return;
+  $("#boardBtn").disabled = true; $("#boardErr").textContent = "";
+  const id = $("#b").dataset.cid || cid(); $("#b").dataset.cid = id;
+  const { d } = await post("/api/board", { session_token: TOKEN, text, client_msg_id: id });
+  if (d.ok) {
+    if (!d.duplicate) S.messages.push({ channel: "board", speaker: "student", text }, { channel: "board", speaker: "ai", text: d.reply });
+    if (d.board_turns !== undefined) S.board_turns = d.board_turns;
+    if (d.board_closed) S.board_closed = true;
+    $("#b").value = ""; delete $("#b").dataset.cid;
+  } else $("#boardErr").textContent = d.error;
+  render();
+};
+
+$("#submitBtn").onclick = async () => {
+  const { d } = await post("/api/submit", { session_token: TOKEN });
+  if (!d.ok) { $("#subErr").textContent = d.error; return; }
+  S.status = "submitted"; S.submission_code = d.submission_code; render();
+};
+
+$("#dlBtn").onclick = async () => {
+  const r = await fetch(WORKER_URL + "/api/transcript", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session_token: TOKEN }) });
+  if (!r.ok) { alert("Couldn't download the transcript. Try again."); return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(await r.blob());
+  a.download = (S.submission_code || "case") + "_transcript.txt"; document.body.appendChild(a); a.click(); a.remove();
+};
+
+// Student-facing rubrics, shown before a case starts and in the Rubric tab (static; no Worker change).
+// Source of truth: AI_Cases/cases/CASE<n>_STUDENT_RUBRIC.md. Keep in sync.
+const RUBRICS = {
+  case1: '<p><b>100 points (5% of your grade). There is no single right answer.</b> Several strategies can earn full credit. You are graded on the quality of your reasoning: thorough investigation, accurate use of the exhibits, respecting the budget and margin limits, weighing alternatives, and a coherent recommendation you can defend.</p>' +
+    '<table><thead><tr><th>Criterion</th><th>Pts</th><th>Excellent (top band)</th></tr></thead><tbody>' +
+    '<tr><td>Investigation</td><td>20</td><td>Talked with at least three people; specific questions; found the financial limits and the customer evidence behind your choice</td></tr>' +
+    '<tr><td>Segmentation &amp; targeting</td><td>20</td><td>One clear segment; all four tests applied with accurate case numbers; compared with at least one alternative</td></tr>' +
+    '<tr><td>Positioning</td><td>15</td><td>Complete course template with a clear frame of reference and an evidence-based reason to believe</td></tr>' +
+    '<tr><td>Integrated marketing mix (4Ps)</td><td>20</td><td>All four Ps support the positioning and each other, within the budget and margin limits</td></tr>' +
+    '<tr><td>Board defense</td><td>15</td><td>Direct, evidence-based answers; owns trade-offs; adapts when pressed</td></tr>' +
+    '<tr><td>Performance metric &amp; reflection</td><td>10</td><td>Measurable metric with a target and deadline; 300–400 word reflection answering all prompts</td></tr>' +
+    '</tbody></table><p class="notice">Each criterion is scored Excellent, Proficient, Developing, or Beginning. The full rubric with point ranges for every level is in the Canvas assignment.</p>',
+};
+function showRubric(caseId) {
+  const html = RUBRICS[caseId] || "";
+  document.querySelectorAll(".rubricBody").forEach((el) => (el.innerHTML = html || '<p class="notice">See the Canvas assignment for the rubric.</p>'));
+  $("#preRubric").classList.toggle("hidden", !html);
+}
+$("#caseSel").addEventListener("change", () => showRubric($("#caseSel").value));
+
+fetch(WORKER_URL + "/api/status").then((r) => r.json()).then((d) => {
+  const cs = (d && d.cases) || [];
+  $("#caseSel").innerHTML = cs.length ? cs.map((c) => '<option value="' + esc(c.case_id) + '">' + esc(c.title) + "</option>").join("") : "<option value=''>No case is open right now</option>";
+  if (cs.length) showRubric(cs[0].case_id);
+  $("#startBtn").disabled = !cs.length;
+}).catch(() => { $("#caseSel").innerHTML = "<option value=''>Can't reach the case server</option>"; $("#startBtn").disabled = true; });
+</script>
+</body>
+</html>
