@@ -63,14 +63,60 @@
   .contrast .gen{background:var(--surface-2); border:1px solid var(--border);}
   .contrast .agt{background:var(--blue-soft); border:1px solid var(--blue);}
   .contrast b{display:block; margin-bottom:4px;}
+  .hero{display:flex; align-items:center; gap:18px; justify-content:space-between;}
+  .robot{width:130px; height:auto; flex:0 0 auto; overflow:visible;}
+  @media (max-width:640px){ .robot{width:90px;} }
+  .bob{animation:bob 2.4s ease-in-out infinite;}
+  .bulb{fill:#d9534f; animation:blink 1.2s steps(2,start) infinite;}
+  .eyes{transform-box:fill-box; transform-origin:center; animation:eyes 4s infinite;}
+  .arm-wave{transform-box:fill-box; transform-origin:0% 50%; animation:wave 1.6s ease-in-out infinite;}
+  .bar{transform-box:fill-box; transform-origin:50% 100%; animation:work 1.4s ease-in-out infinite;}
+  .b2{animation-delay:.2s;} .b3{animation-delay:.4s;} .b4{animation-delay:.6s;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes blink{to{fill:#ffd300}}
+  @keyframes eyes{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-35deg)}}
+  @keyframes work{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+  @media (prefers-reduced-motion: reduce){ .bob,.bulb,.eyes,.arm-wave,.bar{animation:none;} }
   footer{color:var(--ink-muted); font-size:13px; text-align:center; margin-top:28px;}
   footer a{color:inherit;}
 </style>
 </head>
 <body>
 <main class="wrap">
+  <div class="hero">
+  <div>
   <p class="kicker">Hands-on workshop · Dr. Britton Leggett</p>
   <h1>From Chatbot to Coworker: Your First AI Agent</h1>
+  </div>
+  <svg class="robot" viewBox="0 0 160 190" role="img" aria-label="A retro robot waving and working">
+    <g class="bob">
+      <line x1="80" y1="14" x2="80" y2="34" stroke="var(--ink)" stroke-width="4"/>
+      <circle class="bulb" cx="80" cy="12" r="7"/>
+      <rect x="44" y="34" width="72" height="54" rx="8" fill="var(--blue)" stroke="var(--ink)" stroke-width="4"/>
+      <rect x="34" y="52" width="10" height="18" rx="3" fill="var(--ink-muted)"/>
+      <rect x="116" y="52" width="10" height="18" rx="3" fill="var(--ink-muted)"/>
+      <g class="eyes">
+        <circle cx="64" cy="58" r="9" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
+        <circle cx="96" cy="58" r="9" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
+      </g>
+      <rect x="62" y="74" width="36" height="6" rx="3" fill="var(--ink)"/>
+      <rect x="40" y="94" width="80" height="62" rx="8" fill="var(--blue)" stroke="var(--ink)" stroke-width="4"/>
+      <rect x="54" y="104" width="52" height="24" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+      <rect class="bar b1" x="60" y="110" width="8" height="12" fill="var(--accent)"/>
+      <rect class="bar b2" x="72" y="110" width="8" height="12" fill="var(--accent)"/>
+      <rect class="bar b3" x="84" y="110" width="8" height="12" fill="var(--accent)"/>
+      <rect class="bar b4" x="96" y="110" width="5" height="12" fill="var(--accent)"/>
+      <circle cx="62" cy="142" r="5" fill="#d9534f" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="80" cy="142" r="5" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="98" cy="142" r="5" fill="#5cb85c" stroke="var(--ink)" stroke-width="2"/>
+      <g class="arm-wave"><rect x="120" y="100" width="34" height="10" rx="5" fill="var(--ink-muted)" stroke="var(--ink)" stroke-width="3"/><circle cx="154" cy="105" r="8" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/></g>
+      <g><rect x="8" y="100" width="34" height="10" rx="5" fill="var(--ink-muted)" stroke="var(--ink)" stroke-width="3"/><circle cx="8" cy="105" r="8" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/></g>
+      <rect x="54" y="156" width="14" height="24" rx="3" fill="var(--ink-muted)" stroke="var(--ink)" stroke-width="3"/>
+      <rect x="92" y="156" width="14" height="24" rx="3" fill="var(--ink-muted)" stroke="var(--ink)" stroke-width="3"/>
+    </g>
+  </svg>
+  </div>
   <p class="lede">You've used AI that <strong>answers</strong>. Now try AI that <strong>does the work</strong>: it reads your files, builds tools, sorts an inbox, and fixes its own mistakes, right on your own computer. No programming required.</p>
 
   <div class="download">
@@ -159,7 +205,16 @@
 
   <section class="card">
     <h2>Want more? Add GitHub (optional)</h2>
-    <p style="margin:0">A free <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> account plus <a href="https://desktop.github.com" target="_blank" rel="noopener">GitHub Desktop</a> gives your project a version history: every change saved, labeled, and reversible. Ask your agent to "save my work" after each change. To share a tool as a live web link, publish it with GitHub Pages from a public repository, with the tool named <code>index.html</code>.</p>
+    <p style="margin:0 0 10px">GitHub gives your project a <strong>version history</strong>: every change saved, labeled, and reversible. It's how professionals keep AI-built work safe and share it. Use this instead of the zip download.</p>
+    <ol style="margin:0">
+      <li>Create a free account at <a href="https://github.com/signup" target="_blank" rel="noopener">github.com</a> and install <a href="https://desktop.github.com" target="_blank" rel="noopener">GitHub Desktop</a>. Sign in to GitHub Desktop with that account.</li>
+      <li>Open the <a href="https://github.com/brittonleggett/agent-workshop-starter" target="_blank" rel="noopener">workshop template</a>, click the green <strong>Use this template</strong> button → <strong>Create a new repository</strong>. Name it, choose <strong>Private</strong>, and click <strong>Create repository</strong>.</li>
+      <li>On your new repository, click <strong>Code</strong> → <strong>Open with GitHub Desktop</strong> → <strong>Clone</strong>. GitHub Desktop shows where it saved the folder (usually <code>Documents\GitHub</code>).</li>
+      <li>Open <strong>that</strong> folder in Codex or Claude Code, and do Steps 3 and 4 above.</li>
+      <li>After each change you like, switch to GitHub Desktop. You'll see the changed files. Type a short summary (e.g., "Fixed deposit bug"), click <strong>Commit to main</strong>, then <strong>Push origin</strong>. That's one saved version.</li>
+      <li><strong>Optional, a live link:</strong> ask the agent to save your favorite tool as <code>index.html</code> at the top of the folder, then commit and push. On GitHub, make the repository <strong>Public</strong> (Settings → General → Danger Zone → Change visibility), then go to Settings → Pages, choose <strong>Deploy from a branch</strong> → <strong>main</strong>, and save. After a minute or two, your tool is live at <code>yourname.github.io/your-repo-name</code>.</li>
+    </ol>
+    <p class="note">Free accounts can only publish a live link from a <strong>public</strong> repository. That's fine here, because everything is fictional. Never make a repository public if it holds real data.</p>
   </section>
 
   <footer>Everything in the starter folder is fictional practice material. Questions? Ask Dr. Leggett. · <a href="/">brittonrleggett.com</a></footer>
