@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="author" content="Britton Leggett">
+<title>From Chatbot to Coworker</title>
+<meta name="description" content="A hands-on workshop: install an AI agent (Codex or Claude Code) and watch it do real business work.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#eef1ee; --surface:#ffffff; --surface-2:#f5f7f3; --ink:#1b2430; --ink-muted:#5b6472;
+    --border:#dbe0d8; --accent:#e0b400; --accent-strong:#8a6a00; --accent-soft:#fdf3d0;
+    --blue:#00529b; --blue-soft:#e2edf7; --warn-soft:#fbeee0; --warn:#8a4b00;
+    --shadow: 0 1px 2px rgba(20,25,20,.06), 0 6px 20px -8px rgba(20,25,20,.12);
+    --radius: 10px;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: Consolas, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12161b; --surface:#1a2028; --surface-2:#20262e; --ink:#e7e9e4; --ink-muted:#98a2ad;
+      --border:#2b323b; --accent:#ffd300; --accent-strong:#ffe066; --accent-soft:#3a2f10;
+      --blue:#6fa8d8; --blue-soft:#1c2b38; --warn-soft:#33240f; --warn:#f0b46a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px; margin:0 auto; padding:32px 16px 64px;}
+  .kicker{font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-strong); margin:0 0 6px;}
+  h1{font-family:var(--font-display); font-size:34px; line-height:1.15; margin:0 0 10px;}
+  h2{font-family:var(--font-display); font-size:22px; margin:0 0 10px;}
+  .lede{font-size:18px; color:var(--ink-muted); margin:0 0 22px;}
+  .lede strong{color:var(--ink);}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 20px; margin:0 0 18px;}
+  .step-num{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:var(--accent); color:#3a2c00; font-weight:700; font-size:14px; margin-right:8px; vertical-align:middle;}
+  .download{display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between; background:var(--accent-soft); border:1px solid var(--accent); border-radius:var(--radius); padding:18px 20px; margin:0 0 22px;}
+  .download p{margin:0; font-size:14.5px;}
+  .btn{display:inline-block; font-weight:700; font-size:15px; padding:12px 20px; border-radius:8px; background:var(--accent); color:#3a2c00; text-decoration:none; white-space:nowrap;}
+  .btn:hover{filter:brightness(1.05);}
+  .note{background:var(--warn-soft); color:var(--warn); border-radius:8px; padding:10px 12px; font-size:14px; margin:12px 0 0;}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:640px){ .two{grid-template-columns:1fr;} h1{font-size:28px;} }
+  .opt{border:1px solid var(--border); border-radius:8px; padding:14px; background:var(--surface-2);}
+  .opt h3{margin:0 0 2px; font-size:16px;}
+  .opt .tag{font-size:12px; color:var(--ink-muted); margin:0 0 8px;}
+  .opt ol{margin:0; padding-left:20px; font-size:14.5px;}
+  ol,ul{padding-left:22px;}
+  li{margin:4px 0;}
+  .prompt{position:relative; background:var(--surface-2); border:1px solid var(--border); border-left:4px solid var(--blue); border-radius:8px; padding:12px 84px 12px 14px; margin:10px 0; font-size:15px;}
+  .prompt .label{display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--blue); margin-bottom:3px;}
+  .copy{position:absolute; top:10px; right:10px; font:inherit; font-size:12.5px; font-weight:600; padding:5px 10px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--ink); cursor:pointer;}
+  code{font-family:var(--font-mono); font-size:.92em; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 5px;}
+  table{width:100%; border-collapse:collapse; font-size:14.5px;}
+  th,td{text-align:left; padding:8px 6px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-muted);}
+  .contrast{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:6px 0 0;}
+  .contrast div{border-radius:8px; padding:12px; font-size:14.5px;}
+  .contrast .gen{background:var(--surface-2); border:1px solid var(--border);}
+  .contrast .agt{background:var(--blue-soft); border:1px solid var(--blue);}
+  .contrast b{display:block; margin-bottom:4px;}
+  footer{color:var(--ink-muted); font-size:13px; text-align:center; margin-top:28px;}
+  footer a{color:inherit;}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="kicker">Hands-on workshop · Dr. Britton Leggett</p>
+  <h1>From Chatbot to Coworker: Your First AI Agent</h1>
+  <p class="lede">You've used AI that <strong>answers</strong>. Now try AI that <strong>does the work</strong>: it reads your files, builds tools, sorts an inbox, and fixes its own mistakes, right on your own computer. No programming required.</p>
+
+  <div class="download">
+    <p><strong>Starter folder</strong> for the fictional Crawdad Junction Catering: instructions for the AI, business rules, 40 customer emails, sales data, and a buggy tool to fix.</p>
+    <a class="btn" href="Agent_Workshop_Starter.zip" download>Download the starter folder</a>
+  </div>
+
+  <section class="card">
+    <h2>What's different about an agent?</h2>
+    <div class="contrast">
+      <div class="gen"><b>Chatbot (generative AI)</b>You ask; it writes an answer. You copy, paste, and do the work.</div>
+      <div class="agt"><b>Agent (agentic AI)</b>You give it a goal; it makes a plan, opens files, creates real files, runs them, checks its work, and fixes mistakes.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-num">1</span>Unzip the folder</h2>
+    <p style="margin:0">Find the downloaded zip, <strong>right-click → Extract All → Extract</strong>. Mac: double-click the zip. Work from the extracted folder.</p>
+    <p class="note">Don't skip this. If you open the folder inside the zip, the AI can't save anything.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-num">2</span>Install one agent app</h2>
+    <div class="two">
+      <div class="opt">
+        <h3>Codex (OpenAI)</h3>
+        <p class="tag">Works with a free ChatGPT account</p>
+        <ol>
+          <li>Install the <strong>ChatGPT desktop app</strong>. Windows: Microsoft Store, search "ChatGPT." Mac: <a href="https://chatgpt.com/download" target="_blank" rel="noopener">chatgpt.com/download</a>.</li>
+          <li>Sign in.</li>
+          <li>Open <strong>Codex</strong> in the app and choose the extracted folder.</li>
+        </ol>
+      </div>
+      <div class="opt">
+        <h3>Claude Code (Anthropic)</h3>
+        <p class="tag">Needs a paid Claude plan (Pro or higher)</p>
+        <ol>
+          <li>Install the <strong>Claude desktop app</strong> from <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>.</li>
+          <li>Sign in.</li>
+          <li>Open the <strong>Code</strong> tab and choose the extracted folder.</li>
+        </ol>
+      </div>
+    </div>
+    <p style="margin:12px 0 0; font-size:14.5px; color:var(--ink-muted)">No terminal, no programming tools, no admin rights. Windows or Mac laptop required; Chromebooks and phones won't run the desktop apps.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-num">3</span>Say hello</h2>
+    <p style="margin:0">Paste this as your first message:</p>
+    <div class="prompt"><span class="label">First prompt</span><span class="txt">What's in this folder, and what instructions were you given?</span><button class="copy">Copy</button></div>
+    <p style="margin:0; font-size:14.5px">If it describes Crawdad Junction Catering, you're set up. If it says the folder is empty, you opened the wrong folder; go back to Step 1.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-num">4</span>Put it to work</h2>
+    <p style="margin:0 0 4px">Try these in order. Each one is bigger than the last.</p>
+    <div class="prompt"><span class="label">Build a tool</span><span class="txt">Build a catering quote calculator from business_rules.md that I can open in my browser.</span><button class="copy">Copy</button></div>
+    <div class="prompt"><span class="label">Do a chore</span><span class="txt">Go through every email in the inbox. Sort them into folders by type, draft a reply to each one that follows our rules, flag anything a manager must see, and make a summary spreadsheet.</span><button class="copy">Copy</button></div>
+    <div class="prompt"><span class="label">Analyze data</span><span class="txt">Turn data/sales.csv into a one-page dashboard. What are the three most important things the owner should know?</span><button class="copy">Copy</button></div>
+    <div class="prompt"><span class="label">Fix the intern's work</span><span class="txt">Check tools/deposit_calculator.html against business_rules.md. Find every mistake, explain each in plain English, and save a fixed version.</span><button class="copy">Copy</button></div>
+    <div class="prompt"><span class="label">Surprise me</span><span class="txt">Make me something useful for this business that I didn't ask for.</span><button class="copy">Copy</button></div>
+  </section>
+
+  <section class="card">
+    <h2>What's in the folder</h2>
+    <table>
+      <tr><th>File</th><th>What it is</th></tr>
+      <tr><td><code>AGENTS.md</code> / <code>CLAUDE.md</code></td><td>The AI's standing instructions, in plain English (one per app, same text). Read one: this is how you "program" an agent.</td></tr>
+      <tr><td><code>business_rules.md</code></td><td>Prices and policies.</td></tr>
+      <tr><td><code>inbox/</code></td><td>40 customer emails, with a few traps.</td></tr>
+      <tr><td><code>data/sales.csv</code></td><td>21 months of weekly sales.</td></tr>
+      <tr><td><code>tools/deposit_calculator.html</code></td><td>A tool the "last intern" built. Is it right?</td></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Three habits of people who use agents well</h2>
+    <ol style="margin:0">
+      <li><strong>Read before you approve.</strong> When the agent asks permission to do something, read what it is.</li>
+      <li><strong>Check one number.</strong> Agents sound confident even when they're wrong.</li>
+      <li><strong>Never use real data in practice.</strong> No real customer information, passwords, or company files.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Want more? Add GitHub (optional)</h2>
+    <p style="margin:0">A free <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> account plus <a href="https://desktop.github.com" target="_blank" rel="noopener">GitHub Desktop</a> gives your project a version history: every change saved, labeled, and reversible. Ask your agent to "save my work" after each change. To share a tool as a live web link, publish it with GitHub Pages from a public repository, with the tool named <code>index.html</code>.</p>
+  </section>
+
+  <footer>Everything in the starter folder is fictional practice material. Questions? Ask Dr. Leggett. · <a href="/">brittonrleggett.com</a></footer>
+</main>
+<script>
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = b.parentElement.querySelector('.txt').textContent;
+      var done = function(){ b.textContent = 'Copied'; setTimeout(function(){ b.textContent = 'Copy'; }, 1500); };
+      try {
+        navigator.clipboard.writeText(t).then(done, function(){ fallback(t); done(); });
+      } catch(e){ fallback(t); done(); }
+    });
+  });
+  function fallback(t){
+    var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(a);
+  }
+</script>
+</body>
+</html>
