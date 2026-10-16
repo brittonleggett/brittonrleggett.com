@@ -67,6 +67,8 @@
   .robot{width:130px; height:auto; flex:0 0 auto; overflow:visible;}
   @media (max-width:640px){ .robot{width:90px;} }
   .bob{animation:bob 2.4s ease-in-out infinite;}
+  .hat{transform-box:fill-box; transform-origin:50% 100%; animation:tip 4s ease-in-out infinite;}
+  @keyframes tip{0%,70%,100%{transform:rotate(0)}78%{transform:translateY(-6px) rotate(-8deg)}86%{transform:rotate(0)}}
   .bulb{fill:#d9534f; animation:blink 1.2s steps(2,start) infinite;}
   .eyes{transform-box:fill-box; transform-origin:center; animation:eyes 4s infinite;}
   .arm-wave{transform-box:fill-box; transform-origin:0% 50%; animation:wave 1.6s ease-in-out infinite;}
@@ -77,7 +79,7 @@
   @keyframes eyes{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
   @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-35deg)}}
   @keyframes work{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
-  @media (prefers-reduced-motion: reduce){ .bob,.bulb,.eyes,.arm-wave,.bar{animation:none;} }
+  @media (prefers-reduced-motion: reduce){ .bob,.bulb,.eyes,.arm-wave,.bar,.hat{animation:none;} }
   footer{color:var(--ink-muted); font-size:13px; text-align:center; margin-top:28px;}
   footer a{color:inherit;}
 </style>
@@ -91,8 +93,6 @@
   </div>
   <svg class="robot" viewBox="0 0 160 190" role="img" aria-label="A retro robot waving and working">
     <g class="bob">
-      <line x1="80" y1="14" x2="80" y2="34" stroke="var(--ink)" stroke-width="4"/>
-      <circle class="bulb" cx="80" cy="12" r="7"/>
       <rect x="44" y="34" width="72" height="54" rx="8" fill="var(--blue)" stroke="var(--ink)" stroke-width="4"/>
       <rect x="34" y="52" width="10" height="18" rx="3" fill="var(--ink-muted)"/>
       <rect x="116" y="52" width="10" height="18" rx="3" fill="var(--ink-muted)"/>
@@ -100,13 +100,21 @@
         <circle cx="64" cy="58" r="9" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
         <circle cx="96" cy="58" r="9" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
       </g>
-      <rect x="62" y="74" width="36" height="6" rx="3" fill="var(--ink)"/>
+      <path d="M62 74 Q80 84 98 74" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+      <g class="hat">
+        <path d="M54 30 C54 6 62 2 70 8 Q80 14 90 8 C98 2 106 6 106 30 Z" fill="#8b5a2b" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="55" y="22" width="50" height="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M24 30 Q30 40 80 38 Q130 40 136 30 Q132 22 124 28 Q80 34 36 28 Q28 22 24 30 Z" fill="#8b5a2b" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+        <path class="bulb" d="M80 17 l2.4 4.8 5.3.8-3.8 3.7.9 5.3-4.8-2.5-4.8 2.5.9-5.3-3.8-3.7 5.3-.8z" stroke="var(--ink)" stroke-width="1.2" transform="translate(0,-2) scale(1)"/>
+      </g>
       <rect x="40" y="94" width="80" height="62" rx="8" fill="var(--blue)" stroke="var(--ink)" stroke-width="4"/>
-      <rect x="54" y="104" width="52" height="24" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
-      <rect class="bar b1" x="60" y="110" width="8" height="12" fill="var(--accent)"/>
-      <rect class="bar b2" x="72" y="110" width="8" height="12" fill="var(--accent)"/>
-      <rect class="bar b3" x="84" y="110" width="8" height="12" fill="var(--accent)"/>
-      <rect class="bar b4" x="96" y="110" width="5" height="12" fill="var(--accent)"/>
+      <path d="M52 92 L108 92 L80 118 Z" fill="#c0392b" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="68" cy="98" r="1.6" fill="#fff"/><circle cx="92" cy="98" r="1.6" fill="#fff"/><circle cx="80" cy="106" r="1.6" fill="#fff"/>
+      <rect x="54" y="118" width="52" height="16" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+      <rect class="bar b1" x="60" y="122" width="8" height="9" fill="var(--accent)"/>
+      <rect class="bar b2" x="72" y="122" width="8" height="9" fill="var(--accent)"/>
+      <rect class="bar b3" x="84" y="122" width="8" height="9" fill="var(--accent)"/>
+      <rect class="bar b4" x="96" y="122" width="5" height="9" fill="var(--accent)"/>
       <circle cx="62" cy="142" r="5" fill="#d9534f" stroke="var(--ink)" stroke-width="2"/>
       <circle cx="80" cy="142" r="5" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/>
       <circle cx="98" cy="142" r="5" fill="#5cb85c" stroke="var(--ink)" stroke-width="2"/>
