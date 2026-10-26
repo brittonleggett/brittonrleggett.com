@@ -3478,7 +3478,7 @@ function tick(now) {
     if (n !== UI.tw.n) { UI.tw.n = n; $("dlgText").textContent = UI.tw.full.slice(0, n); }
     if (n >= UI.tw.full.length) { UI.tw.done = true; renderDlgRest(); }
   }
-  if (UI.bannerQ.length && now > UI.bannerT) { const b = $("banner"); b.textContent = UI.bannerQ.shift(); b.classList.add("show"); UI.bannerT = now + 2600; setTimeout(() => { if (performance.now() >= UI.bannerT - 50) b.classList.remove("show"); }, 2500); }
+  if (UI.bannerQ.length && now > UI.bannerT) { const b = $("banner"); b.textContent = UI.bannerQ.shift(); b.classList.add("show"); const bt = UI.bannerT = now + 2600; setTimeout(() => { if (UI.bannerT === bt) b.classList.remove("show"); }, 2600); }
   requestAnimationFrame(tick);
 }
 function ambient() { if (!UI.reduced) { UI.frame++; if (S && $("overlay").hidden) drawStage(); } setTimeout(ambient, 240); }
