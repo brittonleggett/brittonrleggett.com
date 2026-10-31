@@ -57,6 +57,7 @@ th{background:var(--maroon);color:#fff;font-size:13px}
 <div id="start" class="card" style="max-width:520px">
   <h2>Start a case</h2>
   <p class="notice">This simulation is anonymous. You will not enter your name. At the end you'll get a submission code and a transcript file to turn in on Canvas.</p>
+  <p class="notice">To keep this fair for everyone, pasting is turned off: every question and answer has to be typed in your own words. The page also records whether each answer was typed or pasted and how long it took. No names are recorded.</p>
   <label for="caseSel">Case</label><select id="caseSel"><option>Loading…</option></select>
   <label for="pw">Course password (from the Canvas assignment)</label><input id="pw" type="password" autocomplete="off">
   <div style="margin-top:12px"><button id="startBtn">Start</button></div>
@@ -145,6 +146,30 @@ function post(path, body) {
 }
 const cid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
 
+// Typing guard (2026-10-31): pasting is off; the page reports how each answer was entered (instructor-only).
+const TG = new WeakMap();
+function tstat(el) { let s = TG.get(el); if (!s) { s = { t0: 0, typed: 0, bulk: 0, back: 0, pa: 0, pc: 0 }; TG.set(el, s); } return s; }
+function guard(el) {
+  const warn = () => { const m = el.id === "q" ? $("#askErr") : el.id === "b" ? $("#boardErr") : $("#recErr"); if (m) m.textContent = "Pasting is turned off in this simulation. Please type your answer in your own words."; };
+  el.addEventListener("paste", (e) => { e.preventDefault(); const s = tstat(el); s.pa++; s.pc += ((e.clipboardData && e.clipboardData.getData("text")) || "").length; warn(); });
+  el.addEventListener("drop", (e) => { e.preventDefault(); const s = tstat(el); s.pa++; s.pc += ((e.dataTransfer && e.dataTransfer.getData("text")) || "").length; warn(); });
+  el.addEventListener("beforeinput", (e) => {
+    const s = tstat(el), t = e.inputType || "";
+    if (/^insertFrom(Paste|Drop|Yank)/.test(t)) { e.preventDefault(); s.pa++; warn(); return; }
+    if (!s.t0 && /^(insert|delete)/.test(t)) s.t0 = Date.now();
+    if (t === "insertText" && e.data && e.data.length === 1) s.typed++;
+    else if (t === "insertCompositionText") s.typed++;
+    else if (t === "insertText" || t === "insertReplacementText") s.bulk += (e.data || "").length;
+    else if (/^delete/.test(t)) s.back++;
+  });
+}
+function takeStats(el, label) {
+  const s = tstat(el); const r = { f: label, len: el.value.length, typed: s.typed, bulk: s.bulk, back: s.back, pa: s.pa, pc: s.pc, ms: s.t0 ? Date.now() - s.t0 : 0 };
+  TG.delete(el); return r;
+}
+function sendTyping(records) { if (records.length) post("/api/typing", { session_token: TOKEN, records }).catch(() => {}); }
+guard($("#q")); guard($("#b"));
+
 function tab(t) {
   document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("hidden", x.id !== "t-" + t));
@@ -193,7 +218,7 @@ function render() {
       '<label for="f_' + esc(f.id) + '">' + esc(f.label) + '</label><textarea id="f_' + esc(f.id) + '" rows="' + (f.rows || 3) + '"></textarea>').join("");
     $("#form").dataset.built = "1";
     c.recommendation_form.forEach((f) => {
-      const el = $("#f_" + f.id); el.value = rec[f.id] || draft[f.id] || "";
+      const el = $("#f_" + f.id); el.value = rec[f.id] || draft[f.id] || ""; guard(el); tstat(el).typed = el.value.length;
       el.oninput = () => { const d = {}; c.recommendation_form.forEach((g) => (d[g.id] = $("#f_" + g.id).value)); store("m530_draft_" + CASE, JSON.stringify(d)); };
     });
   }
@@ -237,7 +262,7 @@ $("#askBtn").onclick = async () => {
   const { d } = await post("/api/ask", { session_token: TOKEN, character_id: WHO, text, client_msg_id: id });
   if (d.ok) {
     if (!d.duplicate) S.messages.push({ channel: WHO, speaker: "student", text }, { channel: WHO, speaker: "ai", text: d.reply });
-    S.investigate_turns = d.investigate_turns; $("#q").value = ""; delete $("#q").dataset.cid;
+    S.investigate_turns = d.investigate_turns; sendTyping([takeStats($("#q"), "interview:" + WHO)]); $("#q").value = ""; delete $("#q").dataset.cid;
   } else $("#askErr").textContent = d.error;
   render(); $("#askBtn").disabled = S.investigate_turns >= S.investigate_budget;
 };
@@ -252,6 +277,7 @@ $("#recBtn").onclick = async () => {
   if (!d.ok) { $("#recErr").textContent = d.error; $("#recBtn").disabled = false; return; }
   $("#recErr").textContent = ""; S.status = "defend"; S.recommendation = rec; S.board_turns = 0; S.board_max = d.board_max;
   S.messages.push({ channel: "board", speaker: "ai", text: d.reply }); store("m530_draft_" + CASE, null);
+  sendTyping(S.case.recommendation_form.map((f) => takeStats($("#f_" + f.id), "rec:" + f.id)));
   render(); tab("board");
 };
 
@@ -264,7 +290,7 @@ $("#boardBtn").onclick = async () => {
     if (!d.duplicate) S.messages.push({ channel: "board", speaker: "student", text }, { channel: "board", speaker: "ai", text: d.reply });
     if (d.board_turns !== undefined) S.board_turns = d.board_turns;
     if (d.board_closed) S.board_closed = true;
-    $("#b").value = ""; delete $("#b").dataset.cid;
+    sendTyping([takeStats($("#b"), "board")]); $("#b").value = ""; delete $("#b").dataset.cid;
   } else $("#boardErr").textContent = d.error;
   render();
 };
